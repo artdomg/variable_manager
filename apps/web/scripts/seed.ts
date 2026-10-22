@@ -9,7 +9,7 @@ import { createDb, eq, schema } from '@vm/db'
 
 export const DEMO_USER = { name: 'Demo', email: 'demo@variables.test', password: 'demo-variables-2026' }
 
-const baseUrl = process.env.BETTER_AUTH_URL ?? 'http://localhost:3000'
+const baseUrl = process.env.BETTER_AUTH_URL ?? 'http://localhost:4710'
 const key = parseEncryptionKey(process.env.ENCRYPTION_KEY)
 const db = createDb(process.env.DATABASE_PATH ?? './data.sqlite')
 

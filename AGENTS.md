@@ -5,6 +5,7 @@ pnpm monorepo: `apps/web` (TanStack Start), `packages/core` (env parsing, refere
 ## Commands
 
 - `pnpm dev` · `pnpm test` · `pnpm typecheck` · `pnpm build`
+- Port: `PORT` in `apps/web/.env` (default 4710, `strictPort`); keep `BETTER_AUTH_URL` on the same port or sessions break.
 - Schema change: edit `packages/db/src/schema.ts`, then `pnpm db:generate`. Migrations apply on server start.
 - Demo data: `pnpm --filter @vm/web seed` (dev server must be running).
 

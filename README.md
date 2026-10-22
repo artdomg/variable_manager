@@ -26,7 +26,7 @@ Rellena `ENCRYPTION_KEY` y `BETTER_AUTH_SECRET` en `apps/web/.env` (genera cada 
 pnpm dev
 ```
 
-Abre http://localhost:3000. Para cargar un proyecto de ejemplo (con el servidor corriendo):
+Abre http://localhost:4710 (puerto configurable con `PORT` en `apps/web/.env`). Para cargar un proyecto de ejemplo (con el servidor corriendo):
 
 ```bash
 pnpm --filter @vm/web seed
