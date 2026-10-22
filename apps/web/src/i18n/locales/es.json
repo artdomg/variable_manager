@@ -1,0 +1,309 @@
+{
+  "auth": {
+    "validation": {
+      "email": "Escribe un correo válido",
+      "passwordRequired": "Escribe tu contraseña",
+      "name": "Escribe tu nombre",
+      "passwordLength": "Usa al menos 8 caracteres"
+    },
+    "errors": {
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "userExists": "Ya existe una cuenta con ese correo. Entra en su lugar.",
+      "passwordTooShort": "La contraseña es demasiado corta.",
+      "generic": "No se pudo continuar. Inténtalo de nuevo."
+    },
+    "signup": {
+      "title": "Crea tu cuenta",
+      "haveAccount": "¿Ya tienes cuenta?",
+      "toLogin": "Entra",
+      "submit": "Crear cuenta"
+    },
+    "login": {
+      "title": "Entra a tus variables",
+      "noAccount": "¿Aún no tienes cuenta?",
+      "toSignup": "Regístrate",
+      "submit": "Entrar"
+    },
+    "fields": {
+      "name": "Nombre",
+      "email": "Correo",
+      "password": "Contraseña"
+    },
+    "submitting": "Un momento…",
+    "panel": {
+      "headline": "Tus variables de entorno, cifradas y conectadas entre sí.",
+      "body": "Define un valor una vez y refiérelo desde otras entidades con",
+      "footer": "Valores cifrados con AES-256-GCM"
+    },
+    "meta": {
+      "login": "Entrar",
+      "signup": "Crear cuenta"
+    }
+  },
+  "app": {
+    "name": "Variables"
+  },
+  "locale": {
+    "label": "Idioma"
+  },
+  "search": {
+    "open": "Buscar",
+    "title": "Buscar variables y entidades",
+    "placeholder": "Busca una variable, entidad o proyecto…",
+    "loading": "Cargando índice…",
+    "noMatch": "Nada coincide con <b>{{query}}</b>. Prueba con parte del nombre, o <code>{{example}}</code>.",
+    "nothingYet": "Aún no hay nada que buscar. Crea un proyecto y sus entidades.",
+    "groups": {
+      "variables": "Variables",
+      "entities": "Entidades",
+      "projectEntities": "Entidades de este proyecto",
+      "projects": "Proyectos"
+    },
+    "hints": {
+      "navigate": "navegar",
+      "open": "abrir",
+      "valuesExcluded": "Los valores no se buscan"
+    }
+  },
+  "nav": {
+    "open": "Abrir navegación",
+    "title": "Navegación",
+    "description": "Proyectos y entidades",
+    "signOut": "Cerrar sesión",
+    "views": "Vistas"
+  },
+  "common": {
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "optional": "(opcional)",
+    "empty": "vacío",
+    "hiddenValue": "valor oculto",
+    "genericError": "Algo salió mal",
+    "copied": "{{label}} copiado",
+    "copyFailed": "No se pudo copiar al portapapeles"
+  },
+  "validation": {
+    "max80": "Máximo 80 caracteres",
+    "max280": "Máximo 280 caracteres",
+    "max48": "Máximo 48 caracteres"
+  },
+  "fields": {
+    "name": "Nombre",
+    "description": "Descripción"
+  },
+  "projects": {
+    "validation": {
+      "name": "Ponle un nombre al proyecto"
+    },
+    "updated": "Proyecto actualizado",
+    "edit": "Editar proyecto",
+    "new": "Nuevo proyecto",
+    "newDescription": "Un proyecto agrupa las entidades (servicios, bases de datos…) que comparten variables.",
+    "create": "Crear proyecto",
+    "deleted": "Proyecto «{{name}}» eliminado",
+    "delete": "Eliminar proyecto",
+    "deleteDescription": "Se eliminarán todas sus entidades y variables. No se puede deshacer. Escribe <b>{{name}}</b> para confirmar.",
+    "nameLabel": "Nombre del proyecto",
+    "title": "Proyectos",
+    "label": "Proyecto",
+    "all": "Todos los proyectos",
+    "back": "Volver a proyectos",
+    "count_one": "{{count}} proyecto",
+    "count_other": "{{count}} proyectos",
+    "encryptedCount_one": "{{count}} variable cifrada",
+    "encryptedCount_other": "{{count}} variables cifradas",
+    "variables_one": "{{count}} variable",
+    "variables_other": "{{count}} variables",
+    "noEntities": "Sin entidades",
+    "empty": {
+      "title": "Empieza con un proyecto",
+      "body": "Un proyecto contiene entidades —una API, una web, una base de datos— y cada entidad sus variables en formato <code>{{format}}</code>. Una entidad puede usar el valor de otra con <code>{{example}}</code>.",
+      "format": "CLAVE=\"valor\"",
+      "cta": "Crear el primer proyecto"
+    },
+    "notFound": {
+      "title": "No encontramos este proyecto",
+      "body": "{{detail}}. Puede que se haya eliminado o que no sea tuyo."
+    },
+    "namePlaceholder": "tienda-online"
+  },
+  "entities": {
+    "validation": {
+      "name": "Ponle un nombre a la entidad",
+      "pattern": "Solo letras, números, «-» y «_»; empieza por letra o número"
+    },
+    "updated": "Entidad actualizada",
+    "updatedRewritten_one": "Entidad actualizada · {{count}} variable reescrita con el nuevo nombre",
+    "updatedRewritten_other": "Entidad actualizada · {{count}} variables reescritas con el nuevo nombre",
+    "edit": "Editar entidad",
+    "new": "Nueva entidad",
+    "editDescription": "Si cambias el nombre, las referencias a esta entidad en el proyecto se reescriben solas.",
+    "newDescription": "Una entidad es un servicio, app o recurso con su propio conjunto de variables.",
+    "referencedAs": "Se referencia como",
+    "namePlaceholder": "nombre",
+    "create": "Crear entidad",
+    "deleted": "Entidad «{{name}}» eliminada",
+    "deleteTitle": "Eliminar «{{name}}»",
+    "deleteDescription": "Se eliminarán la entidad y todas sus variables. No se puede deshacer.",
+    "dependantsWarning_one": "{{count}} variable de otra entidad dejará de resolverse:",
+    "dependantsWarning_other": "{{count}} variables de otras entidades dejarán de resolverse:",
+    "andMore_one": "y {{count}} más…",
+    "andMore_other": "y {{count}} más…",
+    "delete": "Eliminar entidad",
+    "title": "Entidades",
+    "entity": "Entidad",
+    "notFound": "No encontramos esta entidad",
+    "moreActions": "Más acciones de la entidad",
+    "readout": {
+      "variables_one": "{{count}} variable",
+      "variables_other": "{{count}} variables",
+      "references_one": "{{count}} referencia",
+      "references_other": "{{count}} referencias",
+      "broken_one": "{{count}} ref. rota",
+      "broken_other": "{{count}} refs. rotas",
+      "usedBy_one": "usada por {{count}} variable",
+      "usedBy_other": "usada por {{count}} variables",
+      "updated": "actualizada {{when}}"
+    },
+    "empty": {
+      "title": "Crea la primera entidad",
+      "body": "Cada entidad tiene sus propias variables y su propia trama, que oculta sus valores y la identifica cuando otra entidad la referencia. Por ejemplo:",
+      "examplePassword": "secreto"
+    }
+  },
+  "references": {
+    "goTo": "Ir a {{target}}",
+    "missingEntity": "No existe la entidad «{{entity}}»",
+    "missingEntitySuggestion": "No existe la entidad «{{entity}}»; ¿quisiste decir «{{suggestion}}»?",
+    "missingVariable": "«{{entity}}» no tiene la variable «{{key}}»",
+    "cycle": "Referencia circular: {{path}}",
+    "upstream": "«{{target}}» tiene referencias sin resolver",
+    "upstreamCycle": "«{{target}}» forma parte de una referencia circular",
+    "example": "entidad.VARIABLE"
+  },
+  "parse": {
+    "missingEquals": "Falta el signo «=»",
+    "invalidKey": "Nombre inválido «{{key}}»",
+    "unclosedDoubleQuote": "Comilla doble sin cerrar",
+    "unclosedSingleQuote": "Comilla simple sin cerrar",
+    "trailingText": "Texto después de la comilla de cierre",
+    "duplicateKey": "«{{key}}» ya está definida en la línea {{previous}}",
+    "invalidJson": "JSON inválido: {{detail}}",
+    "expectedObject": "Se esperaba un objeto { \"CLAVE\": \"valor\" }",
+    "invalidValueType": "«{{key}}» debe ser texto, número o booleano"
+  },
+  "variables": {
+    "tableLabel": "Variables de {{name}}",
+    "columns": {
+      "key": "Clave",
+      "value": "Valor",
+      "meta": "Registro",
+      "actions": "Acciones",
+      "resolved": "Valor resuelto",
+      "origin": "Origen"
+    },
+    "add": "Añadir variable",
+    "addShort": "Añadir",
+    "addHint": "o pega CLAVE=valor, incluso un .env entero",
+    "deleted": "«{{key}}» eliminada",
+    "saved": "«{{key}}» guardada",
+    "added": "«{{key}}» añadida",
+    "meta": {
+      "resolvedLength_one": "{{count}} carácter resuelto",
+      "resolvedLength_other": "{{count}} caracteres resueltos",
+      "refs_one": "{{count}} ref",
+      "refs_other": "{{count}} refs",
+      "chars_one": "{{count}} car.",
+      "chars_other": "{{count}} car."
+    },
+    "actions": {
+      "show": "Mostrar valor",
+      "hide": "Ocultar valor",
+      "showKey": "Mostrar {{key}}",
+      "hideKey": "Ocultar {{key}}",
+      "copy": "Copiar valor",
+      "copyResolved": "Copiar valor resuelto",
+      "copyKey": "Copiar {{key}}",
+      "edit": "Editar",
+      "editKey": "Editar {{key}}",
+      "delete": "Eliminar",
+      "deleteKey": "Eliminar {{key}}"
+    },
+    "validation": {
+      "required": "Escribe un nombre",
+      "pattern": "Letras, números y «_»; sin empezar por número",
+      "exists": "«{{key}}» ya existe"
+    },
+    "imported": "Importadas: {{added}} nuevas, {{updated}} actualizadas",
+    "ignoredLines_one": "{{count}} línea ignorada",
+    "ignoredLines_other": "{{count}} líneas ignoradas",
+    "keyPlaceholder": "NUEVA_VARIABLE",
+    "valuePlaceholder": "valor, o {{syntax}}",
+    "editorHint": "Intro guarda · Mayús+Intro nueva línea · Esc cancela · ${{ para referenciar",
+    "brokenStamp": "Ref. rota",
+    "empty": {
+      "title": "«{{name}}» aún no tiene variables",
+      "body": "Añádelas una a una, o ve a <b>Raw</b> y pega un archivo <code>.env</code> completo. Para usar el valor de otra entidad escribe <code>{{syntax}}</code>."
+    },
+    "new": "Nueva variable"
+  },
+  "editor": {
+    "saved": "Guardado · {{added}} nuevas, {{updated}} actualizadas, {{removed}} eliminadas",
+    "count_one": "{{count}} variable",
+    "count_other": "{{count}} variables",
+    "line": "línea {{line}}",
+    "onSave": "al guardar",
+    "copy": "Copiar {{label}}",
+    "discard": "Descartar",
+    "save": "Guardar cambios",
+    "ariaLabel": "Variables de {{name}} en formato {{format}}",
+    "placeholderRaw": "CLAVE=\"valor\"",
+    "placeholderJson": "{ \"CLAVE\": \"valor\" }",
+    "coverNote": "El contenido muestra todos los valores en claro.",
+    "reveal": "Mostrar para editar",
+    "willRemove": "Se eliminarán"
+  },
+  "resolved": {
+    "noVariables": "Sin variables.",
+    "tableLabel": "Valores resueltos de {{name}}",
+    "literal": "literal",
+    "title": "Vista resuelta",
+    "brokenNote_one": "{{count}} variable tiene referencias sin resolver; se copia con la referencia literal.",
+    "brokenNote_other": "{{count}} variables tienen referencias sin resolver; se copian con la referencia literal.",
+    "intro": "Los valores finales de <b>{{name}}</b>, con cada <code>{{example}}</code> sustituido.",
+    "unresolved_one": "{{count}} referencia sin resolver",
+    "unresolved_other": "{{count}} referencias sin resolver",
+    "noEntities": "Este proyecto aún no tiene entidades.",
+    "envOf": ".env de {{name}}"
+  },
+  "values": {
+    "showAll": "Mostrar valores",
+    "hideAll": "Ocultar valores"
+  },
+  "copyMenu": {
+    "label": "Copiar",
+    "envResolved": ".env resuelto",
+    "envWithReferences": ".env con referencias",
+    "jsonResolved": "JSON resuelto"
+  },
+  "tabs": {
+    "label": "Formato",
+    "variables": "Variables",
+    "raw": "Raw",
+    "json": "JSON",
+    "resolved": "Resuelto"
+  },
+  "errors": {
+    "unauthorized": "No autorizado",
+    "notFound": {
+      "project": "Proyecto no encontrado",
+      "entity": "Entidad no encontrada",
+      "variable": "Variable no encontrada"
+    },
+    "nameRequired": "El nombre es obligatorio",
+    "entityExists": "Ya existe una entidad llamada «{{name}}»",
+    "variableExists": "«{{key}}» ya existe en esta entidad",
+    "variableDuplicated": "«{{key}}» está duplicada"
+  }
+}

@@ -1,11 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useRouteContext, useRouterState } from '@tanstack/react-router'
 import { Dialog as D } from 'radix-ui'
-import { LogOut, Menu as MenuIcon, Search, X } from 'lucide-react'
+import { Check, LogOut, Menu as MenuIcon, Search, X } from 'lucide-react'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CommandPalette } from '@/components/command-palette'
 import { TintSwatch } from '@/components/tint'
-import { Menu, MenuContent, MenuItem, MenuTrigger } from '@/components/ui/dropdown'
+import { Menu, MenuContent, MenuItem, MenuLabel, MenuSeparator, MenuTrigger } from '@/components/ui/dropdown'
+import { LOCALES, LOCALE_NAMES } from '@/i18n'
+import { useLocale } from '@/i18n/use-locale'
 import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +16,7 @@ const OpenSearch = createContext<() => void>(() => {})
 
 /** Tint-ink rail on the left, paper on the right. The rail becomes a drawer on narrow screens. */
 export function AppShell({ rail, children }: { rail: ReactNode; children: ReactNode }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [searching, setSearching] = useState(false)
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -49,11 +53,11 @@ export function AppShell({ rail, children }: { rail: ReactNode; children: ReactN
                 type="button"
                 onClick={openSearch}
                 className="grid size-8 place-items-center rounded-[5px] hover:bg-white/10"
-                aria-label="Buscar"
+                aria-label={t('search.open')}
               >
                 <Search className="size-[18px]" />
               </button>
-              <D.Trigger className="grid size-8 place-items-center rounded-[5px] hover:bg-white/10" aria-label="Abrir navegación">
+              <D.Trigger className="grid size-8 place-items-center rounded-[5px] hover:bg-white/10" aria-label={t('nav.open')}>
                 <MenuIcon className="size-5" />
               </D.Trigger>
             </div>
@@ -61,10 +65,10 @@ export function AppShell({ rail, children }: { rail: ReactNode; children: ReactN
           <D.Portal>
             <D.Overlay className="fixed inset-0 z-40 bg-shade/50 data-[state=open]:animate-[fade-in_150ms_ease-out] md:hidden" />
             <D.Content className="fixed inset-y-0 left-0 z-50 w-[min(300px,86vw)] focus:outline-none md:hidden">
-              <D.Title className="sr-only">Navegación</D.Title>
-              <D.Description className="sr-only">Proyectos y entidades</D.Description>
+              <D.Title className="sr-only">{t('nav.title')}</D.Title>
+              <D.Description className="sr-only">{t('nav.description')}</D.Description>
               <Rail>{rail}</Rail>
-              <D.Close className="absolute top-3.5 right-3 grid size-8 place-items-center rounded-[5px] text-rail-ink hover:bg-white/10" aria-label="Cerrar">
+              <D.Close className="absolute top-3.5 right-3 grid size-8 place-items-center rounded-[5px] text-rail-ink hover:bg-white/10" aria-label={t('common.close')}>
                 <X className="size-4" />
               </D.Close>
             </D.Content>
@@ -101,6 +105,7 @@ function Rail({ children }: { children: ReactNode }) {
 }
 
 function SearchTrigger() {
+  const { t } = useTranslation()
   const openSearch = useContext(OpenSearch)
   const [shortcut, setShortcut] = useState('⌘K')
   useEffect(() => {
@@ -114,7 +119,7 @@ function SearchTrigger() {
         className="flex h-9 w-full items-center gap-2 border border-white/18 px-2.5 text-[13px] text-rail-muted transition-colors hover:border-white/35 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
       >
         <Search className="size-4" />
-        Buscar
+        {t('search.open')}
         <kbd className="ml-auto font-mono text-[11px] text-rail-muted">{shortcut}</kbd>
       </button>
     </div>
@@ -139,6 +144,8 @@ export const railItemClass = (active: boolean) =>
   )
 
 function UserMenu() {
+  const { t } = useTranslation()
+  const { locale, setLocale } = useLocale()
   const { user } = useRouteContext({ from: '/_app' })
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -161,6 +168,14 @@ function UserMenu() {
         </span>
       </MenuTrigger>
       <MenuContent side="top" align="start" className="w-56">
+        <MenuLabel>{t('locale.label')}</MenuLabel>
+        {LOCALES.map((option) => (
+          <MenuItem key={option} lang={option} onSelect={() => void setLocale(option)}>
+            <Check className={cn(option !== locale && 'invisible')} />
+            {LOCALE_NAMES[option]}
+          </MenuItem>
+        ))}
+        <MenuSeparator />
         <MenuItem
           onSelect={async () => {
             await authClient.signOut()
@@ -169,7 +184,7 @@ function UserMenu() {
           }}
         >
           <LogOut />
-          Cerrar sesión
+          {t('nav.signOut')}
         </MenuItem>
       </MenuContent>
     </Menu>

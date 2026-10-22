@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { findReferences } from '@vm/core'
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TintStrip, TintSwatch } from '@/components/tint'
 import { cn } from '@/lib/utils'
 
@@ -42,7 +43,8 @@ export function ValueDisplay({
   catalog: CatalogEntity[]
   projectId: string
 }) {
-  if (value === '') return <span className="font-sans text-muted italic">vacío</span>
+  const { t } = useTranslation()
+  if (value === '') return <span className="font-sans text-muted italic">{t('common.empty')}</span>
 
   return (
     <span className="inline-flex max-w-full flex-wrap items-center gap-x-0.5 gap-y-1 font-mono">
@@ -72,7 +74,7 @@ export function ValueDisplay({
               </span>
               <span className="tint-cover col-start-1 row-start-1 flex min-w-0 items-center overflow-hidden" data-lifted={revealed}>
                 <TintStrip tint={tint} length={segment.text.length} className="max-w-full" />
-                <span className="sr-only">valor oculto</span>
+                <span className="sr-only">{t('common.hiddenValue')}</span>
               </span>
             </span>
           </Fragment>
@@ -93,6 +95,7 @@ export function ReferenceChip({
   catalog: CatalogEntity[]
   projectId: string
 }) {
+  const { t } = useTranslation()
   const target = catalog.find((e) => e.name === entity)
   const broken = !target || !target.keys.includes(variable)
   const label = (
@@ -116,7 +119,7 @@ export function ReferenceChip({
       params={{ projectId, entityId: target.id }}
       search={{ vista: 'variables', clave: variable }}
       className={chip}
-      title={broken ? `«${entity}» no tiene «${variable}»` : `Ir a ${entity}.${variable}`}
+      title={broken ? t('references.missingVariable', { entity, key: variable }) : t('references.goTo', { target: `${entity}.${variable}` })}
     >
       {label}
     </Link>

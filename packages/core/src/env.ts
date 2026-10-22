@@ -5,9 +5,23 @@ export interface EnvEntry {
   value: string
 }
 
+export type EnvParseErrorCode =
+  | 'missingEquals'
+  | 'invalidKey'
+  | 'unclosedDoubleQuote'
+  | 'unclosedSingleQuote'
+  | 'trailingText'
+  | 'duplicateKey'
+  | 'invalidJson'
+  | 'expectedObject'
+  | 'invalidValueType'
+
+/** Errors carry a code and params, not text, so each UI can translate them. */
 export interface EnvParseError {
+  /** 1-based line, or 0 when the error is not tied to a line (JSON). */
   line: number
-  message: string
+  code: EnvParseErrorCode
+  params?: Record<string, string | number>
 }
 
 export interface EnvParseResult {
@@ -38,13 +52,13 @@ export function parseEnv(text: string): EnvParseResult {
     const body = line.startsWith('export ') ? line.slice(7).trimStart() : line
     const eq = body.indexOf('=')
     if (eq === -1) {
-      errors.push({ line: lineNumber, message: 'Falta el signo «=»' })
+      errors.push({ line: lineNumber, code: 'missingEquals' })
       continue
     }
 
     const key = body.slice(0, eq).trim()
     if (!isValidVariableKey(key)) {
-      errors.push({ line: lineNumber, message: `Nombre inválido «${key}»` })
+      errors.push({ line: lineNumber, code: 'invalidKey', params: { key } })
       continue
     }
 
@@ -61,19 +75,19 @@ export function parseEnv(text: string): EnvParseResult {
         closed = findClosingQuote(buffer)
       }
       if (closed === -1) {
-        errors.push({ line: lineNumber, message: 'Comilla doble sin cerrar' })
+        errors.push({ line: lineNumber, code: 'unclosedDoubleQuote' })
         continue
       }
       const trailing = buffer.slice(closed + 1).trim()
       if (trailing !== '' && !trailing.startsWith('#')) {
-        errors.push({ line: lineNumber, message: 'Texto después de la comilla de cierre' })
+        errors.push({ line: lineNumber, code: 'trailingText' })
         continue
       }
       value = unescapeDoubleQuoted(buffer.slice(0, closed))
     } else if (rest.startsWith("'")) {
       const closed = rest.indexOf("'", 1)
       if (closed === -1) {
-        errors.push({ line: lineNumber, message: 'Comilla simple sin cerrar' })
+        errors.push({ line: lineNumber, code: 'unclosedSingleQuote' })
         continue
       }
       value = rest.slice(1, closed)
@@ -85,7 +99,7 @@ export function parseEnv(text: string): EnvParseResult {
 
     const previous = seen.get(key)
     if (previous !== undefined) {
-      errors.push({ line: lineNumber, message: `«${key}» ya está definida en la línea ${previous}` })
+      errors.push({ line: lineNumber, code: 'duplicateKey', params: { key, previous } })
       continue
     }
     seen.set(key, lineNumber)
@@ -149,22 +163,22 @@ export function parseJsonEnv(text: string): EnvParseResult {
   try {
     data = JSON.parse(text)
   } catch (error) {
-    return { entries: [], errors: [{ line: 0, message: `JSON inválido: ${(error as Error).message}` }] }
+    return { entries: [], errors: [{ line: 0, code: 'invalidJson', params: { detail: (error as Error).message } }] }
   }
   if (data === null || typeof data !== 'object' || Array.isArray(data)) {
-    return { entries: [], errors: [{ line: 0, message: 'Se esperaba un objeto { "CLAVE": "valor" }' }] }
+    return { entries: [], errors: [{ line: 0, code: 'expectedObject' }] }
   }
 
   const entries: EnvEntry[] = []
   const errors: EnvParseError[] = []
   for (const [key, raw] of Object.entries(data)) {
     if (!isValidVariableKey(key)) {
-      errors.push({ line: 0, message: `Nombre inválido «${key}»` })
+      errors.push({ line: 0, code: 'invalidKey', params: { key } })
       continue
     }
     if (typeof raw === 'string') entries.push({ key, value: raw })
     else if (typeof raw === 'number' || typeof raw === 'boolean') entries.push({ key, value: String(raw) })
-    else errors.push({ line: 0, message: `«${key}» debe ser texto, número o booleano` })
+    else errors.push({ line: 0, code: 'invalidValueType', params: { key } })
   }
   return { entries, errors }
 }

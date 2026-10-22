@@ -1,4 +1,6 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
+import { LocaleSwitcher } from '@/components/locale-switcher'
 import { TintStrip, TintSwatch } from '@/components/tint'
 import { sessionQuery } from '@/lib/queries'
 
@@ -18,6 +20,7 @@ const specimen = [
 ]
 
 function AuthLayout() {
+  const { t } = useTranslation()
   return (
     <div className="grid min-h-dvh md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-tint p-10 text-rail-ink md:flex [--tint-ink:var(--color-rail-ink)]">
@@ -27,10 +30,10 @@ function AuthLayout() {
         </div>
         <div className="max-w-md">
           <p className="text-[22px] leading-tight font-semibold tracking-[-0.015em] text-white">
-            Tus variables de entorno, cifradas y conectadas entre sí.
+            {t('auth.panel.headline')}
           </p>
           <p className="mt-3 max-w-sm text-[14px] leading-relaxed text-rail-muted">
-            Define un valor una vez y refiérelo desde otras entidades con{' '}
+            {t('auth.panel.body')}{' '}
             <code className="font-mono text-rail-ink">{'${{entidad.VARIABLE}}'}</code>.
           </p>
           <dl className="mt-8 border-t border-rail-line font-mono text-[12.5px]">
@@ -53,9 +56,12 @@ function AuthLayout() {
             ))}
           </dl>
         </div>
-        <p className="font-mono text-[11px] text-rail-muted">Valores cifrados con AES-256-GCM</p>
+        <p className="font-mono text-[11px] text-rail-muted">{t('auth.panel.footer')}</p>
       </aside>
-      <main className="flex items-center justify-center px-4 py-12 md:px-10">
+      <main className="relative flex items-center justify-center px-4 py-12 md:px-10">
+        <div className="absolute top-4 right-4 md:top-6 md:right-8">
+          <LocaleSwitcher />
+        </div>
         <div className="w-full max-w-[360px]">
           <div className="mb-10 flex items-center gap-2.5 text-[15px] font-bold text-tint md:hidden">
             <TintSwatch tint={4} className="size-5" />

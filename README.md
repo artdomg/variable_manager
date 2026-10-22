@@ -1,16 +1,16 @@
 # Variables
 
-Gestor de variables de entorno: proyectos → entidades → variables cifradas, con referencias entre entidades (`${{entidad.VARIABLE}}`) y una vista con los valores ya resueltos.
+Environment variable manager: projects → entities → encrypted variables, with cross-entity references (`${{entity.VARIABLE}}`) and a view of the fully resolved values. The UI is available in Spanish and English.
 
-## Estructura
+## Structure
 
 ```
-apps/web        TanStack Start (React) — UI, server functions, better-auth
-packages/core   Parseo/serialización .env y JSON, resolución de referencias, cifrado AES-256-GCM
-packages/db     Esquema Drizzle (SQLite), cliente y migraciones
+apps/web        TanStack Start (React): UI, server functions, better-auth, i18n
+packages/core   .env and JSON parsing/serialization, reference resolution, AES-256-GCM encryption
+packages/db     Drizzle schema (SQLite), client and migrations
 ```
 
-## Arranque
+## Getting started
 
 ```bash
 pnpm install
@@ -20,21 +20,21 @@ pnpm install
 cp apps/web/.env.example apps/web/.env
 ```
 
-Rellena `ENCRYPTION_KEY` y `BETTER_AUTH_SECRET` en `apps/web/.env` (genera cada uno con `openssl rand -base64 32`). Las migraciones se aplican solas al arrancar.
+Fill in `ENCRYPTION_KEY` and `BETTER_AUTH_SECRET` in `apps/web/.env` (generate each with `openssl rand -base64 32`). Migrations run automatically on startup.
 
 ```bash
 pnpm dev
 ```
 
-Abre http://localhost:4710 (puerto configurable con `PORT` en `apps/web/.env`). Para cargar un proyecto de ejemplo (con el servidor corriendo):
+Open http://localhost:4710 (the port is set with `PORT` in `apps/web/.env`). To load a sample project (with the server running):
 
 ```bash
 pnpm --filter @vm/web seed
 ```
 
-El usuario demo está en `apps/web/scripts/seed.ts`.
+The demo user is defined in `apps/web/scripts/seed.ts`.
 
-## Producción
+## Production
 
 ```bash
 pnpm build
@@ -44,14 +44,15 @@ pnpm build
 cd apps/web && MIGRATIONS_PATH=../../packages/db/migrations pnpm start
 ```
 
-## Cómo funciona
+## How it works
 
-- **Cifrado**: cada valor se guarda como `v1.<iv>.<tag>.<ciphertext>` (AES-256-GCM) con el id de la entidad como dato autenticado, de modo que un valor copiado a otra fila no se descifra. La llave nunca sale del servidor; si se pierde `ENCRYPTION_KEY`, los valores no se pueden recuperar.
-- **Referencias**: `${{entidad.VARIABLE}}` dentro de cualquier valor, incluso mezclado con texto (`postgres://${{db.USER}}@…`). Se resuelven de forma anidada; las referencias a entidades o variables inexistentes y los ciclos se reportan en la fila y se dejan literales en el valor resuelto.
-- **Nombres de entidad**: letras (mayúsculas o minúsculas), números, `-` y `_`. Las referencias distinguen mayúsculas, pero no puede haber dos entidades que solo difieran en ellas (`api` y `API`); si una referencia falla solo por eso, el error sugiere el nombre correcto.
-- **Renombrar una entidad** reescribe las referencias a ella en todo el proyecto.
-- **Búsqueda (⌘K / Ctrl K)**: encuentra variables, entidades y proyectos en todos tus proyectos, también como `entidad.VARIABLE`. Solo busca nombres; los valores nunca se descifran para buscar.
-- **Vistas**: por variable (edición en línea con autocompletado al escribir `${{`), Raw (`.env`), JSON y Resuelto; además una vista resuelta de todo el proyecto.
+- **Encryption**: each value is stored as `v1.<iv>.<tag>.<ciphertext>` (AES-256-GCM) with the entity id as additional authenticated data, so a value copied to another row won't decrypt. The key never leaves the server; if `ENCRYPTION_KEY` is lost, the values can't be recovered.
+- **References**: `${{entity.VARIABLE}}` anywhere in a value, even mixed with text (`postgres://${{db.USER}}@…`). They resolve recursively; references to missing entities or variables, and cycles, are reported on the row and left verbatim in the resolved value.
+- **Entity names**: letters (upper or lower case), numbers, `-` and `_`. References are case-sensitive, but two entities can't differ only by case (`api` and `API`); when a reference fails only because of case, the error suggests the right name.
+- **Renaming an entity** rewrites every reference to it across the project.
+- **Search (⌘K / Ctrl K)**: finds variables, entities and projects across all your projects, including `entity.VARIABLE` queries. Only names are searched; values are never decrypted for search.
+- **Views**: per variable (inline editing with autocomplete after typing `${{`), Raw (`.env`), JSON and Resolved, plus a resolved view of the whole project.
+- **Languages**: Spanish and English. The first visit follows the browser language; after that, the choice from the language menu (user menu, or the login screen) is stored in a cookie.
 
 ## Tests
 

@@ -3,11 +3,13 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { serializeEnv } from '@vm/core'
 import { Copy, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { ResolvedTable } from '@/components/resolved-table'
 import { TintSwatch } from '@/components/tint'
 import { Button } from '@/components/ui/button'
-import { copyText } from '@/lib/clipboard'
-import { plural } from '@/lib/format'
+import { headT } from '@/i18n/head'
+import { useCopy } from '@/lib/clipboard'
+import { useReferenceExample } from '@/lib/describe-errors'
 import { resolvedProjectQuery } from '@/lib/queries'
 
 export const Route = createFileRoute('/_app/proyectos/$projectId/resuelto')({
@@ -15,11 +17,16 @@ export const Route = createFileRoute('/_app/proyectos/$projectId/resuelto')({
     const data = await context.queryClient.ensureQueryData(resolvedProjectQuery(params.projectId))
     return { name: data.project.name }
   },
-  head: ({ loaderData }) => ({ meta: [{ title: `Vista resuelta · ${loaderData?.name ?? ''} · Variables` }] }),
+  head: ({ loaderData, match }) => ({
+    meta: [{ title: `${headT(match.context)('resolved.title')} · ${loaderData?.name ?? ''} · Variables` }],
+  }),
   component: ResolvedProjectPage,
 })
 
 function ResolvedProjectPage() {
+  const { t } = useTranslation()
+  const copy = useCopy()
+  const referenceExample = useReferenceExample()
   const { projectId } = Route.useParams()
   const { data } = useSuspenseQuery(resolvedProjectQuery(projectId))
   const [revealAll, setRevealAll] = useState(false)
@@ -36,14 +43,17 @@ function ResolvedProjectPage() {
     <>
       <header className="flex flex-wrap items-start justify-between gap-4 px-4 pt-6 pb-5 md:px-8 md:pt-7">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-tint">Vista resuelta</h1>
+          <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-tint">{t('resolved.title')}</h1>
           <p className="mt-1.5 max-w-[65ch] text-[13.5px] text-muted">
-            Los valores finales de <b className="font-semibold text-ink">{data.project.name}</b>, con cada{' '}
-            <code className="font-mono text-ink">{'${{entidad.VARIABLE}}'}</code> sustituido.
+            <Trans
+              i18nKey="resolved.intro"
+              values={{ name: data.project.name, example: referenceExample }}
+              components={{ b: <b className="font-semibold text-ink" />, code: <code className="font-mono text-ink" /> }}
+            />
           </p>
           {broken.length > 0 && (
             <p className="mt-2 font-mono text-[11.5px] font-bold text-danger">
-              {plural(broken.length, 'referencia sin resolver', 'referencias sin resolver')}:{' '}
+              {t('resolved.unresolved', { count: broken.length })}:{' '}
               {broken.map((b, i) => (
                 <span key={`${b.entity.name}.${b.key}`}>
                   {i > 0 && ', '}
@@ -62,12 +72,12 @@ function ResolvedProjectPage() {
         </div>
         <Button onClick={() => setRevealAll((v) => !v)} aria-pressed={revealAll}>
           {revealAll ? <EyeOff /> : <Eye />}
-          {revealAll ? 'Ocultar valores' : 'Mostrar valores'}
+          {revealAll ? t('values.hideAll') : t('values.showAll')}
         </Button>
       </header>
 
       {data.entities.length === 0 && (
-        <p className="border-t border-line px-4 py-6 text-[13px] text-muted md:px-8">Este proyecto aún no tiene entidades.</p>
+        <p className="border-t border-line px-4 py-6 text-[13px] text-muted md:px-8">{t('resolved.noEntities')}</p>
       )}
 
       {data.entities.map((entity) => (
@@ -88,11 +98,14 @@ function ResolvedProjectPage() {
               size="sm"
               variant="ghost"
               onClick={() =>
-                copyText(serializeEnv(entity.variables.map((v) => ({ key: v.key, value: v.value }))), `.env de ${entity.name}`)
+                copy(
+                  serializeEnv(entity.variables.map((v) => ({ key: v.key, value: v.value }))),
+                  t('resolved.envOf', { name: entity.name }),
+                )
               }
             >
               <Copy />
-              Copiar .env
+              {t('editor.copy', { label: '.env' })}
             </Button>
           </div>
           <ResolvedTable

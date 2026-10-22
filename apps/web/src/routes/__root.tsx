@@ -1,10 +1,15 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
-import type { CSSProperties, ReactNode } from 'react'
+import { useEffect, type CSSProperties, type ReactNode } from 'react'
+import { I18nextProvider } from 'react-i18next'
 import { Toaster } from 'sonner'
+import { LOCALE_COOKIE, getI18n } from '@/i18n'
+import { detectLocale, persistLocale } from '@/i18n/locale'
 import appCss from '@/styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  // Re-runs on router.invalidate(), which is how a language change takes effect.
+  beforeLoad: () => ({ locale: detectLocale() }),
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -17,16 +22,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 })
 
 function RootComponent() {
+  const { locale } = Route.useRouteContext()
+
+  // Pin the detected language in a cookie so server and browser always agree.
+  useEffect(() => {
+    if (!document.cookie.includes(`${LOCALE_COOKIE}=`)) persistLocale(locale)
+  }, [locale])
+
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <I18nextProvider i18n={getI18n(locale)}>
+      <RootDocument lang={locale}>
+        <Outlet />
+      </RootDocument>
+    </I18nextProvider>
   )
 }
 
-function RootDocument({ children }: { children: ReactNode }) {
+function RootDocument({ lang, children }: { lang: string; children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang={lang}>
       <head>
         <HeadContent />
       </head>

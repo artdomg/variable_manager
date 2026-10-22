@@ -3,14 +3,16 @@ import { useServerFn } from '@tanstack/react-start'
 import { isValidVariableKey, parseEnv, type ReferenceError } from '@vm/core'
 import { Copy, Eye, EyeOff, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useEffect, useRef, useState, type ClipboardEvent } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { FieldError, Input } from '@/components/ui/input'
 import { Tooltip } from '@/components/ui/tooltip'
 import { ValueDisplay, type CatalogEntity } from '@/components/value-display'
 import { ValueEditor } from '@/components/value-editor'
-import { copyText } from '@/lib/clipboard'
-import { fromNow, plural } from '@/lib/format'
+import { useCopy } from '@/lib/clipboard'
+import { useDescribeReferenceError, useReferenceExample } from '@/lib/describe-errors'
+import { useFormat } from '@/lib/format'
 import { useInvalidateProject } from '@/lib/invalidate'
 import { cn, errorMessage } from '@/lib/utils'
 import { deleteVariable, replaceVariables, saveVariable } from '@/server/projects'
@@ -36,6 +38,7 @@ interface Props {
 }
 
 export function VariablesTable({ entity, variables, catalog, revealAll, editing, onEditingChange, highlight }: Props) {
+  const { t } = useTranslation()
   const [revealed, setRevealed] = useState<Set<string>>(new Set())
   const toggle = (id: string) =>
     setRevealed((current) => {
@@ -50,20 +53,20 @@ export function VariablesTable({ entity, variables, catalog, revealAll, editing,
   }
 
   return (
-    <div role="table" aria-label={`Variables de ${entity.name}`} className="text-[13px]">
+    <div role="table" aria-label={t('variables.tableLabel', { name: entity.name })} className="text-[13px]">
       <div
         role="row"
         className="hidden h-8 items-center border-b border-line px-4 font-mono text-[11px] font-medium tracking-[0.08em] text-muted uppercase @lg:grid @lg:grid-cols-[176px_minmax(0,1fr)_132px] @3xl:grid-cols-[minmax(180px,0.8fr)_minmax(0,2fr)_216px_132px] md:px-8"
       >
-        <span role="columnheader">Clave</span>
+        <span role="columnheader">{t('variables.columns.key')}</span>
         <span role="columnheader" className="pl-3">
-          Valor
+          {t('variables.columns.value')}
         </span>
         <span role="columnheader" className="hidden pl-3 @3xl:block">
-          Registro
+          {t('variables.columns.meta')}
         </span>
         <span role="columnheader" className="sr-only">
-          Acciones
+          {t('variables.columns.actions')}
         </span>
       </div>
 
@@ -105,8 +108,8 @@ export function VariablesTable({ entity, variables, catalog, revealAll, editing,
           className="flex h-11 w-full items-center gap-2 px-4 text-left text-[13px] text-muted transition-colors duration-150 hover:bg-envelope-soft hover:text-tint focus-visible:bg-envelope-soft focus-visible:outline-none md:px-8"
         >
           <Plus className="size-4" />
-          <span className="font-medium">Añadir variable</span>
-          <span className="hidden font-mono text-[12px] @3xl:inline">· o pega CLAVE=valor, incluso un .env entero</span>
+          <span className="font-medium">{t('variables.add')}</span>
+          <span className="hidden font-mono text-[12px] @3xl:inline">· {t('variables.addHint')}</span>
         </button>
       )}
     </div>
@@ -130,6 +133,10 @@ function Row({
   onEdit: () => void
   highlighted: boolean
 }) {
+  const { t } = useTranslation()
+  const copy = useCopy()
+  const { fromNow } = useFormat()
+  const describe = useDescribeReferenceError()
   const ref = useRef<HTMLDivElement>(null)
   const invalidate = useInvalidateProject(entity.projectId)
   const remove = useServerFn(deleteVariable)
@@ -137,9 +144,9 @@ function Row({
     mutationFn: () => remove({ data: { entityId: entity.id, variableId: variable.id } }),
     onSuccess: async () => {
       await invalidate()
-      toast.success(`«${variable.key}» eliminada`)
+      toast.success(t('variables.deleted', { key: variable.key }))
     },
-    onError: (error) => toast.error(errorMessage(error)),
+    onError: (error) => toast.error(errorMessage(error, t('common.genericError'))),
   })
 
   useEffect(() => {
@@ -187,7 +194,7 @@ function Row({
             </span>
             <ul className="grid min-w-48 flex-1 gap-0.5 text-[12.5px] text-danger">
               {variable.errors.map((error) => (
-                <li key={`${error.kind}-${error.target}`}>{error.message}</li>
+                <li key={`${error.kind}-${error.target}`}>{describe(error)}</li>
               ))}
             </ul>
           </div>
@@ -198,47 +205,57 @@ function Row({
         {broken ? (
           <BrokenStamp />
         ) : isPureReference ? (
-          <span title={variable.resolved.length ? `${variable.resolved.length} car. resuelto` : undefined}>
-            {plural(variable.references.length, 'ref', 'refs')} · {fromNow(variable.updatedAt)}
+          <span title={t('variables.meta.resolvedLength', { count: variable.resolved.length })}>
+            {t('variables.meta.refs', { count: variable.references.length })} · {fromNow(variable.updatedAt)}
           </span>
         ) : (
           <span>
-            {variable.value.length} car. · {fromNow(variable.updatedAt)}
+            {t('variables.meta.chars', { count: variable.value.length })} · {fromNow(variable.updatedAt)}
           </span>
         )}
       </div>
 
       <div role="cell" className="col-start-2 row-start-1 flex items-center justify-end gap-0.5 text-muted @lg:col-start-auto @lg:row-start-auto @lg:pl-3">
         {hasLiteral && (
-          <Tooltip label={revealed ? 'Ocultar valor' : 'Mostrar valor'}>
-            <Button variant="ghost" size="icon-sm" onClick={onToggle} aria-label={revealed ? `Ocultar ${variable.key}` : `Mostrar ${variable.key}`}>
+          <Tooltip label={revealed ? t('variables.actions.hide') : t('variables.actions.show')}>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onToggle}
+              aria-label={t(revealed ? 'variables.actions.hideKey' : 'variables.actions.showKey', { key: variable.key })}
+            >
               {revealed ? <EyeOff /> : <Eye />}
             </Button>
           </Tooltip>
         )}
-        <Tooltip label={variable.references.length ? 'Copiar valor resuelto' : 'Copiar valor'}>
+        <Tooltip label={variable.references.length ? t('variables.actions.copyResolved') : t('variables.actions.copy')}>
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={`Copiar ${variable.key}`}
-            onClick={() => copyText(variable.references.length ? variable.resolved : variable.value, variable.key)}
+            aria-label={t('variables.actions.copyKey', { key: variable.key })}
+            onClick={() => copy(variable.references.length ? variable.resolved : variable.value, variable.key)}
           >
             <Copy />
           </Button>
         </Tooltip>
-        <Tooltip label="Editar">
-          <Button variant="ghost" size="icon-sm" onClick={onEdit} aria-label={`Editar ${variable.key}`}>
+        <Tooltip label={t('variables.actions.edit')}>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={onEdit}
+            aria-label={t('variables.actions.editKey', { key: variable.key })}
+          >
             <Pencil />
           </Button>
         </Tooltip>
-        <Tooltip label="Eliminar">
+        <Tooltip label={t('variables.actions.delete')}>
           <Button
             variant="ghost"
             size="icon-sm"
             className="hover:bg-danger-soft hover:text-danger"
             disabled={mutation.isPending}
             onClick={() => mutation.mutate()}
-            aria-label={`Eliminar ${variable.key}`}
+            aria-label={t('variables.actions.deleteKey', { key: variable.key })}
           >
             <Trash2 />
           </Button>
@@ -262,6 +279,7 @@ function EditRow({
   current: { key: string; value: string }[]
   onDone: () => void
 }) {
+  const { t } = useTranslation()
   const existingKeys = current.map((entry) => entry.key)
   const [key, setKey] = useState(variable?.key ?? '')
   const [value, setValue] = useState(variable?.value ?? '')
@@ -274,17 +292,18 @@ function EditRow({
     mutationFn: () => save({ data: { entityId: entity.id, variableId: variable?.id, key: key.trim(), value } }),
     onSuccess: async () => {
       await invalidate()
-      toast.success(variable ? `«${key.trim()}» guardada` : `«${key.trim()}» añadida`)
+      toast.success(t(variable ? 'variables.saved' : 'variables.added', { key: key.trim() }))
       onDone()
     },
-    onError: (error) => toast.error(errorMessage(error)),
+    onError: (error) => toast.error(errorMessage(error, t('common.genericError'))),
   })
 
   const submit = () => {
     const trimmed = key.trim()
-    if (!trimmed) return setKeyError('Escribe un nombre')
-    if (!isValidVariableKey(trimmed)) return setKeyError('Letras, números y «_»; sin empezar por número')
-    if (trimmed !== variable?.key && existingKeys.includes(trimmed)) return setKeyError(`«${trimmed}» ya existe`)
+    if (!trimmed) return setKeyError(t('variables.validation.required'))
+    if (!isValidVariableKey(trimmed)) return setKeyError(t('variables.validation.pattern'))
+    if (trimmed !== variable?.key && existingKeys.includes(trimmed))
+      return setKeyError(t('variables.validation.exists', { key: trimmed }))
     setKeyError(undefined)
     mutation.mutate()
   }
@@ -306,12 +325,12 @@ function EditRow({
       const summary = await replace({ data: { entityId: entity.id, entries: mergeEntries(current, entries) } })
       await invalidate()
       toast.success(
-        `Importadas: ${summary.added} nuevas, ${summary.updated} actualizadas` +
-          (errors.length ? ` · ${plural(errors.length, 'línea ignorada', 'líneas ignoradas')}` : ''),
+        t('variables.imported', { added: summary.added, updated: summary.updated }) +
+          (errors.length ? ` · ${t('variables.ignoredLines', { count: errors.length })}` : ''),
       )
       onDone()
     } catch (error) {
-      toast.error(errorMessage(error))
+      toast.error(errorMessage(error, t('common.genericError')))
     }
   }
 
@@ -334,8 +353,8 @@ function EditRow({
           }}
           onPaste={onPasteKey}
           onKeyDown={(e) => e.key === 'Escape' && onDone()}
-          placeholder="NUEVA_VARIABLE"
-          aria-label="Clave"
+          placeholder={t('variables.keyPlaceholder')}
+          aria-label={t('variables.columns.key')}
           aria-invalid={!!keyError}
           spellCheck={false}
           className="font-mono font-bold"
@@ -353,15 +372,15 @@ function EditRow({
           exclude={variable ? `${entity.name}.${variable.key}` : undefined}
         />
         <p className="mt-1.5 font-mono text-[11px] text-muted">
-          Intro guarda · Mayús+Intro nueva línea · Esc cancela · {'${{'} para referenciar
+          {t('variables.editorHint')}
         </p>
       </div>
       <div role="cell" className="flex items-center justify-end gap-2 @3xl:pl-3">
         <Button type="button" onClick={onDone}>
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button type="submit" variant="primary" disabled={mutation.isPending}>
-          {variable ? 'Guardar' : 'Añadir'}
+          {variable ? t('common.save') : t('variables.addShort')}
         </Button>
       </div>
     </form>
@@ -369,9 +388,10 @@ function EditRow({
 }
 
 function BrokenStamp() {
+  const { t } = useTranslation()
   return (
-    <span className="inline-block -rotate-2 border-[1.5px] border-danger px-1.5 py-px font-mono text-[11px] leading-[16px] font-bold tracking-[0.08em] whitespace-nowrap text-danger">
-      REF. ROTA
+    <span className="inline-block -rotate-2 border-[1.5px] border-danger px-1.5 py-px font-mono text-[11px] leading-[16px] font-bold tracking-[0.08em] whitespace-nowrap text-danger uppercase">
+      {t('variables.brokenStamp')}
     </span>
   )
 }
@@ -383,17 +403,21 @@ function mergeEntries(current: { key: string; value: string }[], incoming: { key
 }
 
 function EmptyVariables({ entityName, onAdd }: { entityName: string; onAdd: () => void }) {
+  const { t } = useTranslation()
+  const referenceExample = useReferenceExample()
   return (
     <div className="max-w-2xl px-4 py-10 md:px-8">
-      <h2 className="text-[15px] font-semibold text-ink">«{entityName}» aún no tiene variables</h2>
+      <h2 className="text-[15px] font-semibold text-ink">{t('variables.empty.title', { name: entityName })}</h2>
       <p className="mt-2 text-[13.5px] leading-relaxed text-muted">
-        Añádelas una a una, o ve a <b className="font-semibold text-ink">Raw</b> y pega un archivo{' '}
-        <code className="font-mono text-ink">.env</code> completo. Para usar el valor de otra entidad escribe{' '}
-        <code className="font-mono text-ink">{'${{entidad.VARIABLE}}'}</code>.
+        <Trans
+          i18nKey="variables.empty.body"
+          values={{ syntax: referenceExample }}
+          components={{ b: <b className="font-semibold text-ink" />, code: <code className="font-mono text-ink" /> }}
+        />
       </p>
       <Button variant="primary" className="mt-5" onClick={onAdd}>
         <Plus />
-        Añadir variable
+        {t('variables.add')}
       </Button>
     </div>
   )

@@ -2,9 +2,11 @@ import { createServerFn } from '@tanstack/react-start'
 import { isValidEntityName, isValidVariableKey, resolveProject } from '@vm/core'
 import { schema } from '@vm/db'
 import { and, asc, count, desc, eq, inArray, max, sql } from '@vm/db'
+import type { ParseKeys } from 'i18next'
 import { z } from 'zod'
 import { openValue, sealValue } from './crypto.server'
 import { db } from './db.server'
+import { serverT } from './translate'
 import { authMiddleware } from './session'
 
 const { project, entity, variable } = schema
@@ -18,10 +20,13 @@ const byEntityName = sql`lower(${entity.name})`
 const TINT_COUNT = 8
 
 class NotFoundError extends Error {
-  constructor(what: string) {
-    super(`${what} no encontrado`)
+  constructor(what: 'project' | 'entity' | 'variable') {
+    super(serverT()(`errors.notFound.${what}`))
   }
 }
+
+/** Zod message resolved per request, so validation errors use the caller's language. */
+const msg = (key: ParseKeys) => ({ error: (): string => serverT()(key) })
 
 function ownedProject(projectId: string, userId: string) {
   const row = db
@@ -29,7 +34,7 @@ function ownedProject(projectId: string, userId: string) {
     .from(project)
     .where(and(eq(project.id, projectId), eq(project.userId, userId)))
     .get()
-  if (!row) throw new NotFoundError('Proyecto')
+  if (!row) throw new NotFoundError('project')
   return row
 }
 
@@ -40,7 +45,7 @@ function ownedEntity(entityId: string, userId: string) {
     .innerJoin(project, eq(project.id, entity.projectId))
     .where(eq(entity.id, entityId))
     .get()
-  if (!row || row.projectUserId !== userId) throw new NotFoundError('Entidad')
+  if (!row || row.projectUserId !== userId) throw new NotFoundError('entity')
   return row.entity
 }
 
@@ -85,7 +90,7 @@ function loadProjectVariables(projectId: string) {
 /* ── Projects ─────────────────────────────────────────────────── */
 
 const projectInput = z.object({
-  name: z.string().trim().min(1, 'El nombre es obligatorio').max(80),
+  name: z.string().trim().min(1, msg('errors.nameRequired')).max(80),
   description: z.string().trim().max(280).default(''),
 })
 
@@ -185,9 +190,9 @@ export const getProject = createServerFn({ method: 'GET' })
 const entityName = z
   .string()
   .trim()
-  .min(1, 'El nombre es obligatorio')
+  .min(1, msg('errors.nameRequired'))
   .max(48)
-  .refine(isValidEntityName, 'Usa letras, números, «-» o «_», empezando por letra o número')
+  .refine(isValidEntityName, msg('entities.validation.pattern'))
 
 /**
  * Names are unique per project ignoring case: `api` and `API` side by side
@@ -200,7 +205,7 @@ function assertEntityNameFree(projectId: string, name: string, exceptId?: string
     .where(and(eq(entity.projectId, projectId), eq(sql`lower(${entity.name})`, name.toLowerCase())))
     .all()
     .find((e) => e.id !== exceptId)
-  if (clash) throw new Error(`Ya existe una entidad llamada «${clash.name}»`)
+  if (clash) throw new Error(serverT()('errors.entityExists', { name: clash.name }))
 }
 
 export const createEntity = createServerFn({ method: 'POST' })
@@ -321,9 +326,9 @@ export const getEntity = createServerFn({ method: 'GET' })
 const variableKey = z
   .string()
   .trim()
-  .min(1, 'El nombre es obligatorio')
+  .min(1, msg('errors.nameRequired'))
   .max(128)
-  .refine(isValidVariableKey, 'Usa letras, números y «_», sin empezar por número')
+  .refine(isValidVariableKey, msg('variables.validation.pattern'))
 
 export const saveVariable = createServerFn({ method: 'POST' })
   .middleware([authMiddleware])
@@ -342,7 +347,7 @@ export const saveVariable = createServerFn({ method: 'POST' })
       .from(variable)
       .where(and(eq(variable.entityId, current.id), eq(variable.key, data.key)))
       .get()
-    if (clash && clash.id !== data.variableId) throw new Error(`«${data.key}» ya existe en esta entidad`)
+    if (clash && clash.id !== data.variableId) throw new Error(serverT()('errors.variableExists', { key: data.key }))
 
     const valueEncrypted = sealValue(data.value, current.id)
     if (data.variableId) {
@@ -351,7 +356,7 @@ export const saveVariable = createServerFn({ method: 'POST' })
         .set({ key: data.key, valueEncrypted })
         .where(and(eq(variable.id, data.variableId), eq(variable.entityId, current.id)))
         .run()
-      if (result.changes === 0) throw new NotFoundError('Variable')
+      if (result.changes === 0) throw new NotFoundError('variable')
     } else {
       const last = db
         .select({ position: max(variable.position) })
@@ -399,7 +404,7 @@ export const replaceVariables = createServerFn({ method: 'POST' })
     const current = ownedEntity(data.entityId, context.userId)
     const keys = new Set<string>()
     for (const entry of data.entries) {
-      if (keys.has(entry.key)) throw new Error(`«${entry.key}» está duplicada`)
+      if (keys.has(entry.key)) throw new Error(serverT()('errors.variableDuplicated', { key: entry.key }))
       keys.add(entry.key)
     }
 

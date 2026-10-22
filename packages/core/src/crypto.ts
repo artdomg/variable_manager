@@ -8,10 +8,10 @@ const VERSION = 'v1'
  * Generate one with: `openssl rand -base64 32`
  */
 export function parseEncryptionKey(secret: string | undefined): Buffer {
-  if (!secret) throw new Error('ENCRYPTION_KEY no está definida')
+  if (!secret) throw new Error('ENCRYPTION_KEY is not set')
   const trimmed = secret.trim()
   const key = /^[0-9a-f]{64}$/i.test(trimmed) ? Buffer.from(trimmed, 'hex') : Buffer.from(trimmed, 'base64')
-  if (key.length !== 32) throw new Error('ENCRYPTION_KEY debe tener 32 bytes (64 hex o base64)')
+  if (key.length !== 32) throw new Error('ENCRYPTION_KEY must be 32 bytes (64 hex chars or base64)')
   return key
 }
 
@@ -32,7 +32,7 @@ export function encrypt(plaintext: string, key: Buffer, context: string): string
 export function decrypt(payload: string, key: Buffer, context: string): string {
   const [version, iv, tag, ciphertext] = payload.split('.')
   if (version !== VERSION || !iv || !tag || ciphertext === undefined) {
-    throw new Error('Formato de valor cifrado no reconocido')
+    throw new Error('Unrecognized encrypted value format')
   }
   const decipher = createDecipheriv(ALGORITHM, key, Buffer.from(iv, 'base64url'))
   decipher.setAAD(Buffer.from(context, 'utf8'))

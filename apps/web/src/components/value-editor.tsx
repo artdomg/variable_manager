@@ -1,5 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TintSwatch } from '@/components/tint'
+import { useReferenceExample } from '@/lib/describe-errors'
 import { fieldClass } from '@/components/ui/input'
 import type { CatalogEntity } from '@/components/value-display'
 import { cn } from '@/lib/utils'
@@ -38,6 +40,8 @@ export function ValueEditor({
   id?: string
   invalid?: boolean
 }) {
+  const { t } = useTranslation()
+  const referenceExample = useReferenceExample()
   const ref = useRef<HTMLTextAreaElement>(null)
   const [caret, setCaret] = useState(value.length)
   const [active, setActive] = useState(0)
@@ -118,7 +122,7 @@ export function ValueEditor({
         spellCheck={false}
         autoCapitalize="off"
         autoComplete="off"
-        placeholder={'valor, o ${{entidad.VARIABLE}}'}
+        placeholder={t('variables.valuePlaceholder', { syntax: referenceExample })}
         aria-invalid={invalid}
         role="combobox"
         aria-expanded={open}

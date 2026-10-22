@@ -1,6 +1,7 @@
 import { Dialog as D } from 'radix-ui'
 import { X } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 export const Dialog = D.Root
@@ -14,6 +15,7 @@ export function DialogContent({
   description,
   ...props
 }: ComponentProps<typeof D.Content> & { title: string; description?: ReactNode }) {
+  const { t } = useTranslation()
   return (
     <D.Portal>
       <D.Overlay className="fixed inset-0 z-40 bg-shade/40 data-[state=open]:animate-[fade-in_150ms_ease-out]" />
@@ -35,7 +37,7 @@ export function DialogContent({
         {children}
         <D.Close
           className="absolute top-4 right-4 grid size-7 place-items-center rounded-[5px] text-muted hover:bg-panel hover:text-ink focus-visible:outline-2 focus-visible:outline-focus"
-          aria-label="Cerrar"
+          aria-label={t('common.close')}
         >
           <X className="size-4" />
         </D.Close>

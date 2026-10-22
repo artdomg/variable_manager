@@ -1,6 +1,6 @@
 # AGENTS.md
 
-pnpm monorepo: `apps/web` (TanStack Start), `packages/core` (env parsing, references, crypto), `packages/db` (Drizzle + SQLite). UI copy is Spanish.
+pnpm monorepo: `apps/web` (TanStack Start), `packages/core` (env parsing, references, crypto), `packages/db` (Drizzle + SQLite). UI in Spanish and English (i18next).
 
 ## Commands
 
@@ -16,6 +16,7 @@ pnpm monorepo: `apps/web` (TanStack Start), `packages/core` (env parsing, refere
 - Reference syntax and resolution live in `packages/core` only; add tests there for any change.
 - Entity names: `[A-Za-z0-9][A-Za-z0-9_-]*`, unique per project ignoring case; references are case-sensitive.
 - After mutations invalidate through `useInvalidateProject` (references cross entities). Keep new queries under the `projects` key if they derive from projects.
+- No hardcoded UI text: add keys to both `apps/web/src/i18n/locales/{es,en}.json` (a test fails if they differ) and use `t()` / `<Trans>`. Zod messages are translation keys (`<FieldError>` translates); server functions throw `serverT()` messages; `@vm/core` returns error codes, worded via `lib/describe-errors.ts`.
 - UI follows `DESIGN.md`: security tints only for hidden values and entity identity, stamp red only for broken refs/destruction, tables switch layout by container queries (`@lg`, `@3xl`). Run `~/.claude/skills/impeccable/scripts/impeccable detect --json apps/web/src` after UI edits.
 
 ## Gotchas
@@ -27,4 +28,6 @@ pnpm monorepo: `apps/web` (TanStack Start), `packages/core` (env parsing, refere
 - Production (Nitro) needs `better-sqlite3` as a direct dependency of `apps/web` and `MIGRATIONS_PATH=../../packages/db/migrations`.
 - SQLite sorts case-sensitively; order entity names with `lower(name)`.
 - Inside `inline-flex` with `gap`, separate text nodes become separate flex items; wrap mixed text in one `<span>`.
+- `{{ }}` is i18next interpolation: never put `${{entity.VAR}}` literally in a locale string; pass it as a value (`useReferenceExample()`).
+- i18n uses one i18next instance per language (never `changeLanguage`) and applies the dayjs locale per call, so concurrent SSR requests can't leak languages. Locale comes from the root `beforeLoad` (cookie `vm-lang`, then `Accept-Language`); switching sets the cookie and calls `router.invalidate()`.
 - GitHub push protection rejects anything shaped like a real key (e.g. `sk_test_…`), even fake demo values; keep seed values obviously fake.

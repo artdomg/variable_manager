@@ -36,11 +36,17 @@ export function findReferences(value: string): Reference[] {
 
 export type ReferenceErrorKind = 'missing-entity' | 'missing-variable' | 'cycle' | 'upstream'
 
+/** Structured so each UI can word it in its own language. */
 export interface ReferenceError {
   kind: ReferenceErrorKind
   /** `entity.KEY` of the reference that failed. */
   target: string
-  message: string
+  entity: string
+  key: string
+  /** missing-entity: an existing entity whose name differs only by case. */
+  suggestion?: string
+  /** cycle: the `entity.KEY` nodes forming the cycle. */
+  cycle?: string[]
 }
 
 export interface ResolvedVariable {
@@ -95,22 +101,12 @@ export function resolveProject(entities: EntityVariables[]): Map<string, Resolve
       if (!entityNames.has(ref.entity)) {
         const lower = ref.entity.toLowerCase()
         const likely = [...entityNames].find((name) => name.toLowerCase() === lower)
-        errors.push({
-          kind: 'missing-entity',
-          target,
-          message: likely
-            ? `No existe la entidad «${ref.entity}»; ¿quisiste decir «${likely}»?`
-            : `No existe la entidad «${ref.entity}»`,
-        })
+        errors.push({ kind: 'missing-entity', target, entity: ref.entity, key: ref.key, suggestion: likely })
         output += ref.match
         continue
       }
       if (!raw.has(target)) {
-        errors.push({
-          kind: 'missing-variable',
-          target,
-          message: `«${ref.entity}» no tiene la variable «${ref.key}»`,
-        })
+        errors.push({ kind: 'missing-variable', target, entity: ref.entity, key: ref.key })
         output += ref.match
         continue
       }
@@ -121,9 +117,9 @@ export function resolveProject(entities: EntityVariables[]): Map<string, Resolve
         errors.push({
           kind: inSameCycle ? 'cycle' : 'upstream',
           target,
-          message: inSameCycle
-            ? `Referencia circular: ${[...targetCycle].join(' → ')}`
-            : `«${target}» forma parte de una referencia circular`,
+          entity: ref.entity,
+          key: ref.key,
+          cycle: [...targetCycle],
         })
         output += ref.match
         continue
@@ -131,7 +127,7 @@ export function resolveProject(entities: EntityVariables[]): Map<string, Resolve
 
       const resolved = resolve(target)
       if (resolved.errors.length > 0) {
-        errors.push({ kind: 'upstream', target, message: `«${target}» tiene referencias sin resolver` })
+        errors.push({ kind: 'upstream', target, entity: ref.entity, key: ref.key })
       }
       output += resolved.value
     }

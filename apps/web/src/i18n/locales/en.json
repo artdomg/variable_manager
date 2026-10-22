@@ -1,0 +1,309 @@
+{
+  "auth": {
+    "validation": {
+      "email": "Enter a valid email",
+      "passwordRequired": "Enter your password",
+      "name": "Enter your name",
+      "passwordLength": "Use at least 8 characters"
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "userExists": "An account with this email already exists. Log in instead.",
+      "passwordTooShort": "That password is too short.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "signup": {
+      "title": "Create your account",
+      "haveAccount": "Already have an account?",
+      "toLogin": "Log in",
+      "submit": "Create account"
+    },
+    "login": {
+      "title": "Log in to your variables",
+      "noAccount": "Don't have an account yet?",
+      "toSignup": "Sign up",
+      "submit": "Log in"
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password"
+    },
+    "submitting": "One moment…",
+    "panel": {
+      "headline": "Your environment variables, encrypted and connected.",
+      "body": "Define a value once and reference it from other entities with",
+      "footer": "Values encrypted with AES-256-GCM"
+    },
+    "meta": {
+      "login": "Log in",
+      "signup": "Create account"
+    }
+  },
+  "app": {
+    "name": "Variables"
+  },
+  "locale": {
+    "label": "Language"
+  },
+  "search": {
+    "open": "Search",
+    "title": "Search variables and entities",
+    "placeholder": "Search for a variable, entity or project…",
+    "loading": "Loading index…",
+    "noMatch": "Nothing matches <b>{{query}}</b>. Try part of the name, or <code>{{example}}</code>.",
+    "nothingYet": "Nothing to search yet. Create a project and its entities.",
+    "groups": {
+      "variables": "Variables",
+      "entities": "Entities",
+      "projectEntities": "Entities in this project",
+      "projects": "Projects"
+    },
+    "hints": {
+      "navigate": "navigate",
+      "open": "open",
+      "valuesExcluded": "Values are never searched"
+    }
+  },
+  "nav": {
+    "open": "Open navigation",
+    "title": "Navigation",
+    "description": "Projects and entities",
+    "signOut": "Sign out",
+    "views": "Views"
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "optional": "(optional)",
+    "empty": "empty",
+    "hiddenValue": "hidden value",
+    "genericError": "Something went wrong",
+    "copied": "{{label}} copied",
+    "copyFailed": "Couldn't copy to the clipboard"
+  },
+  "validation": {
+    "max80": "80 characters max",
+    "max280": "280 characters max",
+    "max48": "48 characters max"
+  },
+  "fields": {
+    "name": "Name",
+    "description": "Description"
+  },
+  "projects": {
+    "validation": {
+      "name": "Give the project a name"
+    },
+    "updated": "Project updated",
+    "edit": "Edit project",
+    "new": "New project",
+    "newDescription": "A project groups the entities (services, databases…) that share variables.",
+    "create": "Create project",
+    "deleted": "Project “{{name}}” deleted",
+    "delete": "Delete project",
+    "deleteDescription": "All of its entities and variables will be deleted. This can't be undone. Type <b>{{name}}</b> to confirm.",
+    "nameLabel": "Project name",
+    "title": "Projects",
+    "label": "Project",
+    "all": "All projects",
+    "back": "Back to projects",
+    "count_one": "{{count}} project",
+    "count_other": "{{count}} projects",
+    "encryptedCount_one": "{{count}} encrypted variable",
+    "encryptedCount_other": "{{count}} encrypted variables",
+    "variables_one": "{{count}} variable",
+    "variables_other": "{{count}} variables",
+    "noEntities": "No entities",
+    "empty": {
+      "title": "Start with a project",
+      "body": "A project holds entities (an API, a website, a database), and each entity holds its variables as <code>{{format}}</code>. One entity can use another's value with <code>{{example}}</code>.",
+      "format": "KEY=\"value\"",
+      "cta": "Create your first project"
+    },
+    "notFound": {
+      "title": "We couldn't find this project",
+      "body": "{{detail}}. It may have been deleted, or it isn't yours."
+    },
+    "namePlaceholder": "online-store"
+  },
+  "entities": {
+    "validation": {
+      "name": "Give the entity a name",
+      "pattern": "Letters, numbers, “-” and “_” only; start with a letter or number"
+    },
+    "updated": "Entity updated",
+    "updatedRewritten_one": "Entity updated · {{count}} variable rewritten with the new name",
+    "updatedRewritten_other": "Entity updated · {{count}} variables rewritten with the new name",
+    "edit": "Edit entity",
+    "new": "New entity",
+    "editDescription": "If you rename it, references to this entity across the project are rewritten automatically.",
+    "newDescription": "An entity is a service, app or resource with its own set of variables.",
+    "referencedAs": "Referenced as",
+    "namePlaceholder": "name",
+    "create": "Create entity",
+    "deleted": "Entity “{{name}}” deleted",
+    "deleteTitle": "Delete “{{name}}”",
+    "deleteDescription": "The entity and all of its variables will be deleted. This can't be undone.",
+    "dependantsWarning_one": "{{count}} variable in another entity will stop resolving:",
+    "dependantsWarning_other": "{{count}} variables in other entities will stop resolving:",
+    "andMore_one": "and {{count}} more…",
+    "andMore_other": "and {{count}} more…",
+    "delete": "Delete entity",
+    "title": "Entities",
+    "entity": "Entity",
+    "notFound": "We couldn't find this entity",
+    "moreActions": "More entity actions",
+    "readout": {
+      "variables_one": "{{count}} variable",
+      "variables_other": "{{count}} variables",
+      "references_one": "{{count}} reference",
+      "references_other": "{{count}} references",
+      "broken_one": "{{count}} broken ref",
+      "broken_other": "{{count}} broken refs",
+      "usedBy_one": "used by {{count}} variable",
+      "usedBy_other": "used by {{count}} variables",
+      "updated": "updated {{when}}"
+    },
+    "empty": {
+      "title": "Create the first entity",
+      "body": "Each entity has its own variables and its own security tint, which hides its values and identifies it when another entity references it. For example:",
+      "examplePassword": "secret"
+    }
+  },
+  "references": {
+    "goTo": "Go to {{target}}",
+    "missingEntity": "There is no entity “{{entity}}”",
+    "missingEntitySuggestion": "There is no entity “{{entity}}”; did you mean “{{suggestion}}”?",
+    "missingVariable": "“{{entity}}” has no variable “{{key}}”",
+    "cycle": "Circular reference: {{path}}",
+    "upstream": "“{{target}}” has unresolved references",
+    "upstreamCycle": "“{{target}}” is part of a circular reference",
+    "example": "entity.VARIABLE"
+  },
+  "parse": {
+    "missingEquals": "Missing “=”",
+    "invalidKey": "Invalid name “{{key}}”",
+    "unclosedDoubleQuote": "Unclosed double quote",
+    "unclosedSingleQuote": "Unclosed single quote",
+    "trailingText": "Text after the closing quote",
+    "duplicateKey": "“{{key}}” is already defined on line {{previous}}",
+    "invalidJson": "Invalid JSON: {{detail}}",
+    "expectedObject": "Expected an object { \"KEY\": \"value\" }",
+    "invalidValueType": "“{{key}}” must be a string, number or boolean"
+  },
+  "variables": {
+    "tableLabel": "Variables of {{name}}",
+    "columns": {
+      "key": "Key",
+      "value": "Value",
+      "meta": "Details",
+      "actions": "Actions",
+      "resolved": "Resolved value",
+      "origin": "Source"
+    },
+    "add": "Add variable",
+    "addShort": "Add",
+    "addHint": "or paste KEY=value, even a whole .env",
+    "deleted": "“{{key}}” deleted",
+    "saved": "“{{key}}” saved",
+    "added": "“{{key}}” added",
+    "meta": {
+      "resolvedLength_one": "{{count}} character resolved",
+      "resolvedLength_other": "{{count}} characters resolved",
+      "refs_one": "{{count}} ref",
+      "refs_other": "{{count}} refs",
+      "chars_one": "{{count}} char",
+      "chars_other": "{{count}} chars"
+    },
+    "actions": {
+      "show": "Show value",
+      "hide": "Hide value",
+      "showKey": "Show {{key}}",
+      "hideKey": "Hide {{key}}",
+      "copy": "Copy value",
+      "copyResolved": "Copy resolved value",
+      "copyKey": "Copy {{key}}",
+      "edit": "Edit",
+      "editKey": "Edit {{key}}",
+      "delete": "Delete",
+      "deleteKey": "Delete {{key}}"
+    },
+    "validation": {
+      "required": "Enter a name",
+      "pattern": "Letters, numbers and “_”; can't start with a number",
+      "exists": "“{{key}}” already exists"
+    },
+    "imported": "Imported: {{added}} new, {{updated}} updated",
+    "ignoredLines_one": "{{count}} line ignored",
+    "ignoredLines_other": "{{count}} lines ignored",
+    "keyPlaceholder": "NEW_VARIABLE",
+    "valuePlaceholder": "value, or {{syntax}}",
+    "editorHint": "Enter saves · Shift+Enter new line · Esc cancels · ${{ to reference",
+    "brokenStamp": "Broken ref",
+    "empty": {
+      "title": "“{{name}}” has no variables yet",
+      "body": "Add them one by one, or go to <b>Raw</b> and paste a whole <code>.env</code> file. To use another entity's value, write <code>{{syntax}}</code>."
+    },
+    "new": "New variable"
+  },
+  "editor": {
+    "saved": "Saved · {{added}} new, {{updated}} updated, {{removed}} removed",
+    "count_one": "{{count}} variable",
+    "count_other": "{{count}} variables",
+    "line": "line {{line}}",
+    "onSave": "on save",
+    "copy": "Copy {{label}}",
+    "discard": "Discard",
+    "save": "Save changes",
+    "ariaLabel": "Variables of {{name}} as {{format}}",
+    "placeholderRaw": "KEY=\"value\"",
+    "placeholderJson": "{ \"KEY\": \"value\" }",
+    "coverNote": "This shows every value in plain text.",
+    "reveal": "Show to edit",
+    "willRemove": "Will be removed"
+  },
+  "resolved": {
+    "noVariables": "No variables.",
+    "tableLabel": "Resolved values of {{name}}",
+    "literal": "literal",
+    "title": "Resolved view",
+    "brokenNote_one": "{{count}} variable has unresolved references; it's copied with the literal reference.",
+    "brokenNote_other": "{{count}} variables have unresolved references; they're copied with the literal reference.",
+    "intro": "The final values of <b>{{name}}</b>, with every <code>{{example}}</code> substituted.",
+    "unresolved_one": "{{count}} unresolved reference",
+    "unresolved_other": "{{count}} unresolved references",
+    "noEntities": "This project has no entities yet.",
+    "envOf": ".env of {{name}}"
+  },
+  "values": {
+    "showAll": "Show values",
+    "hideAll": "Hide values"
+  },
+  "copyMenu": {
+    "label": "Copy",
+    "envResolved": "Resolved .env",
+    "envWithReferences": ".env with references",
+    "jsonResolved": "Resolved JSON"
+  },
+  "tabs": {
+    "label": "Format",
+    "variables": "Variables",
+    "raw": "Raw",
+    "json": "JSON",
+    "resolved": "Resolved"
+  },
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "notFound": {
+      "project": "Project not found",
+      "entity": "Entity not found",
+      "variable": "Variable not found"
+    },
+    "nameRequired": "A name is required",
+    "entityExists": "An entity named “{{name}}” already exists",
+    "variableExists": "“{{key}}” already exists in this entity",
+    "variableDuplicated": "“{{key}}” is duplicated"
+  }
+}

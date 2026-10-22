@@ -1,11 +1,19 @@
 import dayjs from 'dayjs'
+import 'dayjs/locale/en'
 import 'dayjs/locale/es'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { useTranslation } from 'react-i18next'
 
 dayjs.extend(relativeTime)
-dayjs.locale('es')
 
-export const fromNow = (date: Date | string | number) => dayjs(date).fromNow()
-export const fullDate = (date: Date | string | number) => dayjs(date).format('D MMM YYYY, HH:mm')
-
-export const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
+/**
+ * Date formatting in the active language. The locale is applied per call, not
+ * globally, so concurrent SSR requests in different languages stay correct.
+ */
+export function useFormat() {
+  const { i18n } = useTranslation()
+  const locale = i18n.language
+  return {
+    fromNow: (date: Date | string | number) => dayjs(date).locale(locale).fromNow(),
+  }
+}

@@ -2,33 +2,37 @@ import { useForm } from '@tanstack/react-form'
 import { useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { FieldError, Input, Label } from '@/components/ui/input'
 import { authClient } from '@/lib/auth-client'
 import { sessionQuery } from '@/lib/queries'
 
+// Validation messages are translation keys; <FieldError> translates them.
 const schemas = {
   login: z.object({
     name: z.string(),
-    email: z.email('Escribe un correo válido'),
-    password: z.string().min(1, 'Escribe tu contraseña'),
+    email: z.email('auth.validation.email'),
+    password: z.string().min(1, 'auth.validation.passwordRequired'),
   }),
   signup: z.object({
-    name: z.string().trim().min(1, 'Escribe tu nombre'),
-    email: z.email('Escribe un correo válido'),
-    password: z.string().min(8, 'Usa al menos 8 caracteres'),
+    name: z.string().trim().min(1, 'auth.validation.name'),
+    email: z.email('auth.validation.email'),
+    password: z.string().min(8, 'auth.validation.passwordLength'),
   }),
 }
 
-const authErrors: Record<string, string> = {
-  INVALID_EMAIL_OR_PASSWORD: 'Correo o contraseña incorrectos.',
-  USER_ALREADY_EXISTS: 'Ya existe una cuenta con ese correo. Entra en su lugar.',
-  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: 'Ya existe una cuenta con ese correo. Entra en su lugar.',
-  PASSWORD_TOO_SHORT: 'La contraseña es demasiado corta.',
-}
+/** better-auth error codes we word ourselves; anything else falls back to a generic message. */
+const authErrors = {
+  INVALID_EMAIL_OR_PASSWORD: 'auth.errors.invalidCredentials',
+  USER_ALREADY_EXISTS: 'auth.errors.userExists',
+  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: 'auth.errors.userExists',
+  PASSWORD_TOO_SHORT: 'auth.errors.passwordTooShort',
+} as const
 
 export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [error, setError] = useState<string>()
@@ -43,7 +47,8 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
         ? await authClient.signUp.email({ name: value.name.trim(), email: value.email, password: value.password })
         : await authClient.signIn.email({ email: value.email, password: value.password })
       if (result.error) {
-        setError(authErrors[result.error.code ?? ''] ?? result.error.message ?? 'No se pudo continuar.')
+        const code = result.error.code as keyof typeof authErrors | undefined
+        setError(t(code && code in authErrors ? authErrors[code] : 'auth.errors.generic'))
         return
       }
       // The session query has no observers, so invalidating alone would not refetch it.
@@ -55,12 +60,12 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   return (
     <>
       <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-ink">
-        {signup ? 'Crea tu cuenta' : 'Entra a tus variables'}
+        {signup ? t('auth.signup.title') : t('auth.login.title')}
       </h1>
       <p className="mt-1.5 text-[13.5px] text-muted">
-        {signup ? '¿Ya tienes cuenta? ' : '¿Aún no tienes cuenta? '}
+        {signup ? t('auth.signup.haveAccount') : t('auth.login.noAccount')}{' '}
         <Link to={signup ? '/entrar' : '/registro'} className="font-medium text-tint underline">
-          {signup ? 'Entra' : 'Regístrate'}
+          {signup ? t('auth.signup.toLogin') : t('auth.login.toSignup')}
         </Link>
       </p>
 
@@ -76,7 +81,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
           <form.Field name="name">
             {(field) => (
               <div className="grid gap-1.5">
-                <Label htmlFor="name">Nombre</Label>
+                <Label htmlFor="name">{t('auth.fields.name')}</Label>
                 <Input
                   id="name"
                   autoComplete="name"
@@ -94,7 +99,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
         <form.Field name="email">
           {(field) => (
             <div className="grid gap-1.5">
-              <Label htmlFor="email">Correo</Label>
+              <Label htmlFor="email">{t('auth.fields.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -112,7 +117,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
         <form.Field name="password">
           {(field) => (
             <div className="grid gap-1.5">
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password">{t('auth.fields.password')}</Label>
               <Input
                 id="password"
                 type="password"
@@ -137,7 +142,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
         <form.Subscribe selector={(s) => s.isSubmitting}>
           {(submitting) => (
             <Button type="submit" variant="primary" size="lg" className="mt-2 w-full" disabled={submitting}>
-              {submitting ? 'Un momento…' : signup ? 'Crear cuenta' : 'Entrar'}
+              {submitting ? t('auth.submitting') : signup ? t('auth.signup.submit') : t('auth.login.submit')}
             </Button>
           )}
         </form.Subscribe>

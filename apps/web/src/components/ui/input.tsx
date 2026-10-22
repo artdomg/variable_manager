@@ -1,4 +1,5 @@
 import type { ComponentProps } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 export const fieldClass =
@@ -16,11 +17,13 @@ export function Label({ className, ...props }: ComponentProps<'label'>) {
   return <label className={cn('text-[12px] font-semibold text-ink', className)} {...props} />
 }
 
+/** Shows a validation message; zod schemas carry translation keys as messages. */
 export function FieldError({ children }: { children?: string }) {
+  const { t } = useTranslation()
   if (!children) return null
   return (
     <p role="alert" className="text-[12px] text-danger">
-      {children}
+      {t(children as never, { defaultValue: children })}
     </p>
   )
 }

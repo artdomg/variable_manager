@@ -4,13 +4,13 @@ import { useNavigate } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { isValidEntityName } from '@vm/core'
 import { useState, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { TintSwatch } from '@/components/tint'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { FieldError, Input, Label, Textarea } from '@/components/ui/input'
-import { plural } from '@/lib/format'
 import { errorMessage } from '@/lib/utils'
 import { createEntity, deleteEntity, updateEntity } from '@/server/projects'
 
@@ -18,10 +18,10 @@ const schema = z.object({
   name: z
     .string()
     .trim()
-    .min(1, 'Ponle un nombre a la entidad')
-    .max(48, 'Máximo 48 caracteres')
-    .refine(isValidEntityName, 'Solo letras, números, «-» y «_»; empieza por letra o número'),
-  description: z.string().max(280, 'Máximo 280 caracteres'),
+    .min(1, 'entities.validation.name')
+    .max(48, 'validation.max48')
+    .refine(isValidEntityName, 'entities.validation.pattern'),
+  description: z.string().max(280, 'validation.max280'),
 })
 
 /** Replaces spaces as you type, so the name is always usable in references. */
@@ -43,6 +43,7 @@ export function EntityDialog({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
   const open = controlledOpen ?? uncontrolledOpen
   const setOpen = onOpenChange ?? setUncontrolledOpen
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const create = useServerFn(createEntity)
@@ -55,11 +56,7 @@ export function EntityDialog({
       try {
         if (entity) {
           const { rewritten } = await update({ data: { entityId: entity.id, ...value } })
-          toast.success(
-            rewritten
-              ? `Entidad actualizada · ${plural(rewritten, 'variable reescrita', 'variables reescritas')} con el nuevo nombre`
-              : 'Entidad actualizada',
-          )
+          toast.success(rewritten ? t('entities.updatedRewritten', { count: rewritten }) : t('entities.updated'))
           await queryClient.invalidateQueries({ queryKey: ['entity'] })
         } else {
           const { id } = await create({ data: { projectId, ...value } })
@@ -73,7 +70,7 @@ export function EntityDialog({
         await queryClient.invalidateQueries({ queryKey: ['projects'] })
         setOpen(false)
       } catch (error) {
-        toast.error(errorMessage(error))
+        toast.error(errorMessage(error, t('common.genericError')))
       }
     },
   })
@@ -88,11 +85,11 @@ export function EntityDialog({
     >
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent
-        title={entity ? 'Editar entidad' : 'Nueva entidad'}
+        title={entity ? t('entities.edit') : t('entities.new')}
         description={
           entity
-            ? 'Si cambias el nombre, las referencias a esta entidad en el proyecto se reescriben solas.'
-            : 'Una entidad es un servicio, app o recurso con su propio conjunto de variables.'
+            ? t('entities.editDescription')
+            : t('entities.newDescription')
         }
       >
         <form
@@ -106,7 +103,7 @@ export function EntityDialog({
           <form.Field name="name">
             {(field) => (
               <div className="grid gap-1.5">
-                <Label htmlFor="entity-name">Nombre</Label>
+                <Label htmlFor="entity-name">{t('fields.name')}</Label>
                 <Input
                   id="entity-name"
                   autoFocus
@@ -122,8 +119,8 @@ export function EntityDialog({
                 <form.Subscribe selector={(s) => s.values.name}>
                   {(name) => (
                     <p className="font-mono text-[11.5px] text-muted">
-                      Se referencia como {'${{'}
-                      <span className="text-tint">{name || 'nombre'}</span>
+                      {t('entities.referencedAs')} {'${{'}
+                      <span className="text-tint">{name || t('entities.namePlaceholder')}</span>
                       {'.VARIABLE}}'}
                     </p>
                   )}
@@ -135,7 +132,7 @@ export function EntityDialog({
             {(field) => (
               <div className="grid gap-1.5">
                 <Label htmlFor="entity-description">
-                  Descripción <span className="font-normal text-muted">(opcional)</span>
+                  {t('fields.description')} <span className="font-normal text-muted">{t('common.optional')}</span>
                 </Label>
                 <Textarea
                   id="entity-description"
@@ -149,12 +146,12 @@ export function EntityDialog({
           </form.Field>
           <div className="mt-1 flex justify-end gap-2">
             <DialogClose asChild>
-              <Button type="button">Cancelar</Button>
+              <Button type="button">{t('common.cancel')}</Button>
             </DialogClose>
             <form.Subscribe selector={(s) => s.isSubmitting}>
               {(submitting) => (
                 <Button type="submit" variant="primary" disabled={submitting}>
-                  {entity ? 'Guardar' : 'Crear entidad'}
+                  {entity ? t('common.save') : t('entities.create')}
                 </Button>
               )}
             </form.Subscribe>
@@ -176,6 +173,7 @@ export function DeleteEntityDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const remove = useServerFn(deleteEntity)
@@ -188,22 +186,21 @@ export function DeleteEntityDialog({
       await queryClient.invalidateQueries({ queryKey: ['project', entity.projectId] })
       await queryClient.invalidateQueries({ queryKey: ['entity'] })
       await queryClient.invalidateQueries({ queryKey: ['projects'] })
-      toast.success(`Entidad «${entity.name}» eliminada`)
+      toast.success(t('entities.deleted', { name: entity.name }))
     },
-    onError: (error) => toast.error(errorMessage(error)),
+    onError: (error) => toast.error(errorMessage(error, t('common.genericError'))),
   })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        title={`Eliminar «${entity.name}»`}
-        description="Se eliminarán la entidad y todas sus variables. No se puede deshacer."
+        title={t('entities.deleteTitle', { name: entity.name })}
+        description={t('entities.deleteDescription')}
       >
         {dependants.length > 0 && (
           <div className="mb-4 border border-danger/40 bg-danger-soft p-3 text-[13px] text-danger">
             <p className="font-semibold">
-              {plural(dependants.length, 'variable de otra entidad dejará', 'variables de otras entidades dejarán')} de
-              resolverse:
+              {t('entities.dependantsWarning', { count: dependants.length })}
             </p>
             <ul className="mt-2 grid gap-1 font-mono text-[12px]">
               {dependants.slice(0, 8).map((d) => (
@@ -211,7 +208,7 @@ export function DeleteEntityDialog({
                   {d.entity}.{d.key}
                 </li>
               ))}
-              {dependants.length > 8 && <li>y {dependants.length - 8} más…</li>}
+              {dependants.length > 8 && <li>{t('entities.andMore', { count: dependants.length - 8 })}</li>}
             </ul>
           </div>
         )}
@@ -222,10 +219,10 @@ export function DeleteEntityDialog({
           </span>
           <div className="flex gap-2">
             <DialogClose asChild>
-              <Button>Cancelar</Button>
+              <Button>{t('common.cancel')}</Button>
             </DialogClose>
             <Button variant="danger" disabled={mutation.isPending} onClick={() => mutation.mutate()}>
-              Eliminar entidad
+              {t('entities.delete')}
             </Button>
           </div>
         </div>

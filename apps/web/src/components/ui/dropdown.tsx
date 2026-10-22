@@ -35,3 +35,12 @@ export function MenuItem({ className, tone, ...props }: ComponentProps<typeof M.
 }
 
 export const MenuSeparator = () => <M.Separator className="my-1 h-px bg-line" />
+
+export function MenuLabel({ className, ...props }: ComponentProps<typeof M.Label>) {
+  return (
+    <M.Label
+      className={cn('px-2 pt-1.5 pb-1 font-mono text-[11px] font-medium tracking-[0.08em] text-muted uppercase', className)}
+      {...props}
+    />
+  )
+}

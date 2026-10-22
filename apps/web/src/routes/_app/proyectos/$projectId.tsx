@@ -2,6 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link, Outlet, createFileRoute, useParams } from '@tanstack/react-router'
 import { Check, ChevronsUpDown, FileCheck2, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AppShell, RailLabel, railItemClass } from '@/components/app-shell'
 import { EntityDialog } from '@/components/entity-dialogs'
 import { DeleteProjectDialog, ProjectDialog } from '@/components/project-dialogs'
@@ -22,6 +23,7 @@ export const Route = createFileRoute('/_app/proyectos/$projectId')({
 })
 
 function ProjectLayout() {
+  const { t } = useTranslation()
   const { projectId } = Route.useParams()
   const { data: project } = useSuspenseQuery(projectQuery(projectId))
   const entityId = useParams({ strict: false, select: (p) => p.entityId })
@@ -29,7 +31,7 @@ function ProjectLayout() {
   const rail = (
     <>
       <ProjectSwitcher project={project} />
-      <RailLabel aside={<span>{project.entities.length}</span>}>Entidades</RailLabel>
+      <RailLabel aside={<span>{project.entities.length}</span>}>{t('entities.title')}</RailLabel>
       {project.entities.map((e) => (
         <Link
           key={e.id}
@@ -46,12 +48,12 @@ function ProjectLayout() {
       <EntityDialog projectId={projectId}>
         <button className="mt-1 flex h-9 w-full items-center gap-3 px-5 text-[13px] text-rail-muted transition-colors hover:text-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white">
           <Plus className="size-[18px]" />
-          Nueva entidad
+          {t('entities.new')}
         </button>
       </EntityDialog>
 
       <div className="mt-6">
-        <RailLabel>Vistas</RailLabel>
+        <RailLabel>{t('nav.views')}</RailLabel>
         <Link
           to="/proyectos/$projectId/resuelto"
           params={{ projectId }}
@@ -59,7 +61,7 @@ function ProjectLayout() {
           activeProps={{ className: railItemClass(true) }}
         >
           <FileCheck2 className="size-[18px]" />
-          <span className="font-sans">Vista resuelta</span>
+          <span className="font-sans">{t('resolved.title')}</span>
         </Link>
       </div>
     </>
@@ -73,6 +75,7 @@ function ProjectLayout() {
 }
 
 function ProjectSwitcher({ project }: { project: { id: string; name: string; description: string } }) {
+  const { t } = useTranslation()
   const { data: projects } = useSuspenseQuery(projectsQuery())
   const [editing, setEditing] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -82,7 +85,7 @@ function ProjectSwitcher({ project }: { project: { id: string; name: string; des
       <Menu>
         <MenuTrigger className="flex h-10 w-full items-center gap-2 border border-white/18 px-2.5 text-left text-white transition-colors hover:border-white/35 focus-visible:outline-2 focus-visible:outline-white data-[state=open]:border-white/45">
           <span className="min-w-0 flex-1">
-            <span className="block font-mono text-[10.5px] tracking-[0.08em] text-rail-muted uppercase">Proyecto</span>
+            <span className="block font-mono text-[10.5px] tracking-[0.08em] text-rail-muted uppercase">{t('projects.label')}</span>
             <span className="block truncate text-[13px] leading-tight font-semibold">{project.name}</span>
           </span>
           <ChevronsUpDown className="size-4 text-rail-muted" />
@@ -98,15 +101,15 @@ function ProjectSwitcher({ project }: { project: { id: string; name: string; des
           ))}
           <MenuSeparator />
           <MenuItem asChild>
-            <Link to="/proyectos">Todos los proyectos</Link>
+            <Link to="/proyectos">{t('projects.all')}</Link>
           </MenuItem>
           <MenuItem onSelect={() => setEditing(true)}>
             <Pencil />
-            Editar proyecto
+            {t('projects.edit')}
           </MenuItem>
           <MenuItem tone="danger" onSelect={() => setDeleting(true)}>
             <Trash2 />
-            Eliminar proyecto
+            {t('projects.delete')}
           </MenuItem>
         </MenuContent>
       </Menu>
@@ -117,12 +120,13 @@ function ProjectSwitcher({ project }: { project: { id: string; name: string; des
 }
 
 function ProjectError({ error }: { error: unknown }) {
+  const { t } = useTranslation()
   return (
     <div className="mx-auto max-w-md px-4 py-24">
-      <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-ink">No encontramos este proyecto</h1>
-      <p className="mt-2 text-[13.5px] text-muted">{errorMessage(error)}. Puede que se haya eliminado o que no sea tuyo.</p>
+      <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-ink">{t('projects.notFound.title')}</h1>
+      <p className="mt-2 text-[13.5px] text-muted">{t('projects.notFound.body', { detail: errorMessage(error, t('common.genericError')) })}</p>
       <Link to="/proyectos" className="mt-5 inline-block font-medium text-tint underline">
-        Volver a proyectos
+        {t('projects.back')}
       </Link>
     </div>
   )

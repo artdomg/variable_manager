@@ -62,9 +62,6 @@ describe('entity names with uppercase', () => {
       }),
     )
     expect(valueOf(result, 'web', 'API').value).toBe('http://x:8080')
-    expect(valueOf(result, 'web', 'BAD').errors[0]).toMatchObject({
-      kind: 'missing-entity',
-      message: expect.stringContaining('«MyApi»'),
-    })
+    expect(valueOf(result, 'web', 'BAD').errors[0]).toMatchObject({ kind: 'missing-entity', suggestion: 'MyApi' })
   })
 })

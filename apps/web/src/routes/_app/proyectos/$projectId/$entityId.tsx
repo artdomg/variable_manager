@@ -4,6 +4,7 @@ import { entriesToJson, serializeEnv } from '@vm/core'
 import { Tabs } from 'radix-ui'
 import { ChevronDown, Copy, Eye, EyeOff, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { DeleteEntityDialog, EntityDialog } from '@/components/entity-dialogs'
 import { ResolvedTable } from '@/components/resolved-table'
@@ -12,8 +13,9 @@ import { TintSwatch } from '@/components/tint'
 import { Button } from '@/components/ui/button'
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '@/components/ui/dropdown'
 import { VariablesTable } from '@/components/variables-table'
-import { copyText } from '@/lib/clipboard'
-import { fromNow, plural } from '@/lib/format'
+import { headT } from '@/i18n/head'
+import { useCopy } from '@/lib/clipboard'
+import { useFormat } from '@/lib/format'
 import { entityQuery, projectQuery } from '@/lib/queries'
 import { cn, errorMessage } from '@/lib/utils'
 
@@ -30,15 +32,22 @@ export const Route = createFileRoute('/_app/proyectos/$projectId/$entityId')({
     const project = await context.queryClient.ensureQueryData(projectQuery(params.projectId))
     return { title: `${data.entity.name} · ${project.name}` }
   },
-  head: ({ loaderData }) => ({ meta: [{ title: `${loaderData?.title ?? 'Entidad'} · Variables` }] }),
+  head: ({ loaderData, match }) => ({
+    meta: [{ title: `${loaderData?.title ?? headT(match.context)('entities.entity')} · Variables` }],
+  }),
   component: EntityPage,
-  errorComponent: ({ error }) => (
-    <div className="px-4 py-16 md:px-8">
-      <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-ink">No encontramos esta entidad</h1>
-      <p className="mt-2 text-[13.5px] text-muted">{errorMessage(error)}.</p>
-    </div>
-  ),
+  errorComponent: EntityError,
 })
+
+function EntityError({ error }: { error: unknown }) {
+  const { t } = useTranslation()
+  return (
+    <div className="px-4 py-16 md:px-8">
+      <h1 className="text-[22px] font-semibold tracking-[-0.015em] text-ink">{t('entities.notFound')}</h1>
+      <p className="mt-2 text-[13.5px] text-muted">{errorMessage(error, t('common.genericError'))}.</p>
+    </div>
+  )
+}
 
 function EntityPage() {
   const { entityId } = Route.useParams()
@@ -46,14 +55,17 @@ function EntityPage() {
   return <EntityView key={entityId} />
 }
 
-const tabs: { value: View; label: string }[] = [
-  { value: 'variables', label: 'Variables' },
-  { value: 'raw', label: 'Raw' },
-  { value: 'json', label: 'JSON' },
-  { value: 'resuelto', label: 'Resuelto' },
-]
+const tabs = [
+  { value: 'variables', label: 'tabs.variables' },
+  { value: 'raw', label: 'tabs.raw' },
+  { value: 'json', label: 'tabs.json' },
+  { value: 'resuelto', label: 'tabs.resolved' },
+] as const satisfies { value: View; label: string }[]
 
 function EntityView() {
+  const { t } = useTranslation()
+  const copy = useCopy()
+  const { fromNow } = useFormat()
   const { entityId, projectId } = Route.useParams()
   const { vista, clave } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
@@ -82,71 +94,71 @@ function EntityView() {
           </div>
           {entity.description && <p className="mt-2 max-w-[65ch] text-[13.5px] text-muted">{entity.description}</p>}
           <p className="mt-2.5 flex flex-wrap gap-x-3.5 gap-y-1 font-mono text-[11.5px] text-muted">
-            <span>{plural(variables.length, 'variable', 'variables')}</span>
-            <span>{plural(referenceCount, 'referencia', 'referencias')}</span>
+            <span>{t('entities.readout.variables', { count: variables.length })}</span>
+            <span>{t('entities.readout.references', { count: referenceCount })}</span>
             {broken.length > 0 && (
               <Link
                 to="."
                 search={{ vista: 'variables', clave: broken[0]!.key }}
                 className="font-bold text-danger underline decoration-danger/40"
               >
-                {plural(broken.length, 'ref. rota', 'refs. rotas')}
+                {t('entities.readout.broken', { count: broken.length })}
               </Link>
             )}
-            {dependants.length > 0 && <span>usada por {plural(dependants.length, 'variable', 'variables')}</span>}
-            <span>actualizada {fromNow(entity.updatedAt)}</span>
+            {dependants.length > 0 && <span>{t('entities.readout.usedBy', { count: dependants.length })}</span>}
+            <span>{t('entities.readout.updated', { when: fromNow(entity.updatedAt) })}</span>
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Button onClick={() => setRevealAll((v) => !v)} aria-pressed={revealAll}>
             {revealAll ? <EyeOff /> : <Eye />}
-            {revealAll ? 'Ocultar valores' : 'Mostrar valores'}
+            {revealAll ? t('values.hideAll') : t('values.showAll')}
           </Button>
           <Menu>
             <MenuTrigger asChild>
               <Button>
                 <Copy />
-                Copiar
+                {t('copyMenu.label')}
                 <ChevronDown className="-mr-1 text-muted" />
               </Button>
             </MenuTrigger>
             <MenuContent className="w-56">
-              <MenuItem onSelect={() => copyText(serializeEnv(resolvedEntries), '.env resuelto')}>
-                .env resuelto
+              <MenuItem onSelect={() => copy(serializeEnv(resolvedEntries), t('copyMenu.envResolved'))}>
+                {t('copyMenu.envResolved')}
               </MenuItem>
-              <MenuItem onSelect={() => copyText(serializeEnv(entries), '.env')}>.env con referencias</MenuItem>
-              <MenuItem onSelect={() => copyText(entriesToJson(resolvedEntries), 'JSON resuelto')}>
-                JSON resuelto
+              <MenuItem onSelect={() => copy(serializeEnv(entries), '.env')}>{t('copyMenu.envWithReferences')}</MenuItem>
+              <MenuItem onSelect={() => copy(entriesToJson(resolvedEntries), t('copyMenu.jsonResolved'))}>
+                {t('copyMenu.jsonResolved')}
               </MenuItem>
             </MenuContent>
           </Menu>
           <Button
             variant="primary"
-            aria-label="Nueva variable"
+            aria-label={t('variables.new')}
             onClick={() => {
               setEditing('new')
               if (vista !== 'variables') void navigate({ search: { vista: 'variables' } })
             }}
           >
             <Plus />
-            <span className="hidden sm:inline">Nueva variable</span>
+            <span className="hidden sm:inline">{t('variables.new')}</span>
           </Button>
           <Menu>
             <MenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Más acciones de la entidad">
+              <Button variant="ghost" size="icon" aria-label={t('entities.moreActions')}>
                 <MoreHorizontal />
               </Button>
             </MenuTrigger>
             <MenuContent>
               <MenuItem onSelect={() => setEditingEntity(true)}>
                 <Pencil />
-                Editar entidad
+                {t('entities.edit')}
               </MenuItem>
               <MenuSeparator />
               <MenuItem tone="danger" onSelect={() => setDeleting(true)}>
                 <Trash2 />
-                Eliminar entidad
+                {t('entities.delete')}
               </MenuItem>
             </MenuContent>
           </Menu>
@@ -158,7 +170,7 @@ function EntityView() {
         onValueChange={(value) => void navigate({ search: { vista: value as View }, replace: true })}
       >
         <Tabs.List
-          aria-label="Formato"
+          aria-label={t('tabs.label')}
           className="sticky top-12 z-10 flex gap-6 overflow-x-auto border-b border-line bg-ground px-4 md:top-0 md:px-8"
         >
           {tabs.map((tab) => (
@@ -170,7 +182,7 @@ function EntityView() {
                 'data-[state=active]:font-semibold data-[state=active]:text-tint data-[state=active]:shadow-[inset_0_-2px_0_var(--color-tint)]',
               )}
             >
-              {tab.label}
+              {t(tab.label)}
               {tab.value === 'variables' && <span className="ml-1.5 font-mono text-[11px] font-normal">{variables.length}</span>}
               {tab.value === 'resuelto' && broken.length > 0 && (
                 <span className="ml-1.5 font-mono text-[11px] font-bold text-danger">{broken.length}</span>
@@ -199,8 +211,7 @@ function EntityView() {
         <Tabs.Content value="resuelto" className="focus-visible:outline-none">
           {broken.length > 0 && (
             <p className="border-b border-line bg-danger-soft/70 px-4 py-2.5 text-[12.5px] text-danger md:px-8">
-              {plural(broken.length, 'variable tiene', 'variables tienen')} referencias sin resolver; se copian con la
-              referencia literal.
+              {t('resolved.brokenNote', { count: broken.length })}
             </p>
           )}
           <ResolvedTable

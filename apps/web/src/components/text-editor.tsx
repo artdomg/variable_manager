@@ -3,11 +3,12 @@ import { useServerFn } from '@tanstack/react-start'
 import { entriesToJson, parseEnv, parseJsonEnv, serializeEnv, type EnvEntry } from '@vm/core'
 import { Copy, Eye } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { TintStrip } from '@/components/tint'
-import { copyText } from '@/lib/clipboard'
-import { plural } from '@/lib/format'
+import { useCopy } from '@/lib/clipboard'
+import { useDescribeParseError } from '@/lib/describe-errors'
 import { useInvalidateProject } from '@/lib/invalidate'
 import { cn, errorMessage } from '@/lib/utils'
 import { replaceVariables } from '@/server/projects'
@@ -34,6 +35,9 @@ export function TextEditor({
   revealed: boolean
   onReveal: () => void
 }) {
+  const { t } = useTranslation()
+  const copy = useCopy()
+  const describe = useDescribeParseError()
   const { serialize, parse, label } = formats[format]
   const saved = useMemo(() => serialize(entries), [serialize, entries])
   const [text, setText] = useState(saved)
@@ -76,10 +80,10 @@ export function TextEditor({
       setText(serialize(parsed.entries))
       await invalidate()
       toast.success(
-        `Guardado · ${summary.added} nuevas, ${summary.updated} actualizadas, ${summary.removed} eliminadas`,
+        t('editor.saved', { added: summary.added, updated: summary.updated, removed: summary.removed }),
       )
     },
-    onError: (error) => toast.error(errorMessage(error)),
+    onError: (error) => toast.error(errorMessage(error, t('common.genericError'))),
   })
 
   const canSave = dirty && parsed.errors.length === 0 && !mutation.isPending
@@ -89,34 +93,34 @@ export function TextEditor({
     <div className="px-4 py-5 md:px-8">
       <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="font-mono text-[11.5px] text-muted">
-          {plural(parsed.entries.length, 'variable', 'variables')}
+          {t('editor.count', { count: parsed.entries.length })}
           {parsed.errors[0] && (
             <span className="text-danger">
               {' · '}
-              {parsed.errors[0].line > 0 && `línea ${parsed.errors[0].line}: `}
-              {parsed.errors[0].message}
+              {parsed.errors[0].line > 0 && `${t('editor.line', { line: parsed.errors[0].line })}: `}
+              {describe(parsed.errors[0])}
             </span>
           )}
           {dirty && parsed.errors.length === 0 && (
             <>
-              {' · al guardar: '}
+              {` · ${t('editor.onSave')}: `}
               <span className="text-ok">+{diff.added}</span> · <span className="text-tint">~{diff.updated}</span> ·{' '}
               <span className={cn(diff.removed.length && 'font-bold text-danger')}>−{diff.removed.length}</span>
             </>
           )}
         </p>
         <div className="ml-auto flex gap-2">
-          <Button size="sm" onClick={() => copyText(text, label)}>
+          <Button size="sm" onClick={() => copy(text, label)}>
             <Copy />
-            Copiar {label}
+            {t('editor.copy', { label })}
           </Button>
           {dirty && (
             <Button size="sm" onClick={() => setText(saved)}>
-              Descartar
+              {t('editor.discard')}
             </Button>
           )}
           <Button size="sm" variant="primary" disabled={!canSave} onClick={() => mutation.mutate()}>
-            Guardar cambios
+            {t('editor.save')}
           </Button>
         </div>
       </div>
@@ -151,10 +155,10 @@ export function TextEditor({
             autoCapitalize="off"
             autoComplete="off"
             wrap="off"
-            aria-label={`Variables de ${entity.name} en formato ${label}`}
+            aria-label={t('editor.ariaLabel', { name: entity.name, format: label })}
             readOnly={!shown}
             tabIndex={shown ? 0 : -1}
-            placeholder={format === 'raw' ? 'CLAVE="valor"' : '{ "CLAVE": "valor" }'}
+            placeholder={format === 'raw' ? t('editor.placeholderRaw') : t('editor.placeholderJson')}
             className={cn(
               'h-[min(62vh,640px)] min-h-64 w-full resize-y bg-transparent px-3 py-3 font-mono text-[12.5px] leading-[20px] text-ink focus:outline-none',
               !shown && 'select-none',
@@ -173,10 +177,10 @@ export function TextEditor({
               ))}
             </div>
             <div className="relative grid justify-items-center gap-2 bg-ground/92 px-6 py-4 shadow-[0_0_0_1px_var(--color-line),0_12px_32px_-12px_rgb(15_20_45/0.3)]">
-              <p className="text-[13px] text-ink">El contenido muestra todos los valores en claro.</p>
+              <p className="text-[13px] text-ink">{t('editor.coverNote')}</p>
               <Button variant="primary" onClick={onReveal}>
                 <Eye />
-                Mostrar para editar
+                {t('editor.reveal')}
               </Button>
             </div>
           </div>
@@ -187,15 +191,15 @@ export function TextEditor({
         <ul className="mt-3 grid gap-1 text-[12.5px] text-danger" role="alert">
           {parsed.errors.slice(0, 6).map((error, i) => (
             <li key={i}>
-              {error.line > 0 && <span className="font-mono font-bold">Línea {error.line}: </span>}
-              {error.message}
+              {error.line > 0 && <span className="font-mono font-bold">{t('editor.line', { line: error.line })}: </span>}
+              {describe(error)}
             </li>
           ))}
         </ul>
       )}
       {dirty && diff.removed.length > 0 && parsed.errors.length === 0 && (
         <p className="mt-3 text-[12.5px] text-danger">
-          Se eliminarán: <span className="font-mono">{diff.removed.join(', ')}</span>
+          {t('editor.willRemove')}: <span className="font-mono">{diff.removed.join(', ')}</span>
         </p>
       )}
     </div>
