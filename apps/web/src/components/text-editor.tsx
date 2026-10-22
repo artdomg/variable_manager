@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useServerFn } from '@tanstack/react-start'
 import { entriesToJson, parseEnv, parseJsonEnv, serializeEnv, type EnvEntry } from '@vm/core'
 import { Copy, Eye } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -43,7 +43,16 @@ export function TextEditor({
   const [text, setText] = useState(saved)
   const [baseline, setBaseline] = useState(saved)
   const textarea = useRef<HTMLTextAreaElement>(null)
-  const gutter = useRef<HTMLDivElement>(null)
+
+  // Grow with the content instead of scrolling, so the line-number gutter
+  // always lines up with the text. The offset term keeps room for the
+  // horizontal scrollbar that long lines produce.
+  useLayoutEffect(() => {
+    const el = textarea.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight + el.offsetHeight - el.clientHeight}px`
+  }, [text])
 
   // Adopt fresh server data unless the user has unsaved edits.
   useEffect(() => {
@@ -90,8 +99,8 @@ export function TextEditor({
   const lineCount = text.split('\n').length
 
   return (
-    <div className="px-4 py-5 md:px-8">
-      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+    <div className="px-4 pt-3 pb-5 md:px-8">
+      <div className="sticky top-22 z-[5] -mx-1 mb-1 flex flex-wrap items-center gap-x-4 gap-y-2 bg-ground px-1 py-2 md:top-10">
         <p className="font-mono text-[11.5px] text-muted">
           {t('editor.count', { count: parsed.entries.length })}
           {parsed.errors[0] && (
@@ -128,9 +137,8 @@ export function TextEditor({
       <div className="relative">
         <div className="flex overflow-hidden rounded-[5px] border border-line-strong bg-ground focus-within:border-accent focus-within:ring-3 focus-within:ring-focus/25">
           <div
-            ref={gutter}
             aria-hidden
-            className="w-11 shrink-0 overflow-hidden border-r border-line bg-panel py-3 pr-2.5 text-right font-mono text-[12.5px] leading-[20px] text-muted select-none"
+            className="w-11 shrink-0 border-r border-line bg-panel py-3 pr-2.5 text-right font-mono text-[12.5px] leading-[20px] text-muted select-none"
           >
             {Array.from({ length: lineCount }, (_, i) => (
               <div key={i} className={cn(parsed.errors.some((e) => e.line === i + 1) && 'font-bold text-danger')}>
@@ -142,9 +150,6 @@ export function TextEditor({
             ref={textarea}
             value={text}
             onChange={(e) => setText(e.target.value)}
-            onScroll={(e) => {
-              if (gutter.current) gutter.current.scrollTop = e.currentTarget.scrollTop
-            }}
             onKeyDown={(e) => {
               if ((e.metaKey || e.ctrlKey) && e.key === 's') {
                 e.preventDefault()
@@ -160,23 +165,24 @@ export function TextEditor({
             tabIndex={shown ? 0 : -1}
             placeholder={format === 'raw' ? t('editor.placeholderRaw') : t('editor.placeholderJson')}
             className={cn(
-              'h-[min(62vh,640px)] min-h-64 w-full resize-y bg-transparent px-3 py-3 font-mono text-[12.5px] leading-[20px] text-ink focus:outline-none',
+              'block min-h-64 w-full min-w-0 resize-none overflow-x-auto overflow-y-hidden bg-transparent px-3 py-3 font-mono text-[12.5px] leading-[20px] text-ink focus:outline-none',
               !shown && 'select-none',
             )}
           />
         </div>
 
         {!shown && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 overflow-hidden rounded-[5px] border border-line-strong bg-ground">
+          <div className="absolute inset-0 flex flex-col items-center rounded-[5px] border border-line-strong bg-ground">
             <div aria-hidden className="absolute inset-0 grid content-start gap-[8px] p-3 pl-14">
-              {entries.slice(0, 26).map((entry) => (
+              {entries.map((entry) => (
                 <div key={entry.key} className="flex items-center gap-2 font-mono text-[12.5px] leading-[12px]">
                   <span className="font-bold text-ink/80">{entry.key}=</span>
                   <TintStrip tint={entity.tint} length={entry.value.length} />
                 </div>
               ))}
             </div>
-            <div className="relative grid justify-items-center gap-2 bg-ground/92 px-6 py-4 shadow-[0_0_0_1px_var(--color-line),0_12px_32px_-12px_rgb(15_20_45/0.3)]">
+            {/* Sticky so the prompt stays in view however long the entity is. */}
+            <div className="sticky top-[30vh] mt-24 grid justify-items-center gap-2 bg-ground/92 px-6 py-4 shadow-[0_0_0_1px_var(--color-line),0_12px_32px_-12px_rgb(15_20_45/0.3)]">
               <p className="text-[13px] text-ink">{t('editor.coverNote')}</p>
               <Button variant="primary" onClick={onReveal}>
                 <Eye />
