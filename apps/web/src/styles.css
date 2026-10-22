@@ -1,0 +1,147 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/public-sans';
+@import '@fontsource-variable/jetbrains-mono';
+
+@theme {
+  --font-sans: 'Public Sans Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', monospace;
+
+  /* Paper */
+  --color-ground: #fbfbf8;
+  --color-panel: #f1f1eb;
+  --color-line: #e5e4dc;
+  --color-line-strong: #cfd0d6;
+  --color-ink: #1a1e2c;
+  --color-muted: #646a7f;
+
+  /* Tint ink: the rail, primary actions, selection */
+  --color-tint: #26326b;
+  --color-tint-deep: #1c2554;
+  --color-envelope: #dfe4f2;
+  --color-envelope-soft: #eef1f8;
+  --color-rail-ink: #cdd3ec;
+  --color-rail-muted: #a3acd3;
+  --color-rail-line: rgb(255 255 255 / 0.13);
+
+  --color-accent: #26326b;
+  --color-accent-hover: #1c2554;
+  --color-accent-ink: #ffffff;
+  --color-focus: #3d55c4;
+
+  /* Stamp red only for broken references and destruction; ledger green for saved */
+  --color-danger: #c4372d;
+  --color-danger-soft: #fbefed;
+  --color-ok: #2f7a50;
+  --color-shade: #141a38;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+  }
+  ::selection {
+    background: var(--color-envelope);
+    color: var(--color-tint-deep);
+  }
+  input,
+  textarea {
+    caret-color: var(--color-tint);
+  }
+  :focus-visible {
+    outline-color: var(--color-focus);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+}
+
+/*
+ * Security tints. Each entity owns one pattern; it is used only to hide values
+ * and to identify the entity (swatches, reference chips). Patterns are alpha
+ * masks painted in `currentColor`, so the same tint works on paper and rail.
+ */
+.tint {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  color: var(--tint-ink, var(--color-tint));
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Cpath d='M-1 1l2-2M0 5l5-5M4 6l2-2' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E");
+}
+.tint::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: var(--tint-strength, 0.62);
+  -webkit-mask: var(--tint-mask) repeat;
+  mask: var(--tint-mask) repeat;
+}
+.tint-1 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Cpath d='M0 .5H5M.5 0V5' stroke='%23000' stroke-width='.7'/%3E%3C/svg%3E");
+}
+.tint-2 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3Q4 0 8 3T16 3M0 3Q4 6 8 3T16 3' fill='none' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E");
+}
+.tint-3 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='2' cy='2' r='.95'/%3E%3C/svg%3E");
+}
+.tint-4 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='8' font-family='monospace' font-size='3.5' font-weight='700'%3E%3Ctext y='3.3'%3ECONFIDENCIAL%3C/text%3E%3Ctext x='-23' y='7.4'%3ECONFIDENCIAL%3C/text%3E%3Ctext x='23' y='7.4'%3ECONFIDENCIAL%3C/text%3E%3C/svg%3E");
+}
+.tint-5 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 4l2-3 2 3 2-3 2 3' fill='none' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E");
+}
+.tint-6 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='4'%3E%3Cpath d='M0 .5H6M3 2.2v1.6' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E");
+}
+.tint-7 {
+  --tint-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 0l6 6M6 0L0 6' stroke='%23000' stroke-width='.6'/%3E%3C/svg%3E");
+}
+
+/* The signature move: revealing lifts the tint off the value like a window. */
+.tint-cover {
+  transition:
+    clip-path 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease-out;
+  clip-path: inset(0 0 0 0);
+}
+.tint-cover[data-lifted='true'] {
+  clip-path: inset(0 0 0 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tint-cover {
+    transition: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+@keyframes row-in {
+  from {
+    background-color: var(--color-envelope);
+  }
+}

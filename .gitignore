@@ -1,0 +1,15 @@
+node_modules
+.env
+.env.local
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+.output
+.nitro
+.tanstack
+dist
+.vinxi
+.impeccable/review
+.impeccable/mocks
+.DS_Store

@@ -1,0 +1,535 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-22T00:00:00Z",
+  "title": "Design System: Variables",
+  "extensions": {
+    "colorMeta": {
+      "tint": {
+        "role": "primary",
+        "displayName": "Tint Ink Blue",
+        "canonical": "#26326b",
+        "tonalRamp": [
+          "#0f142b",
+          "#171e40",
+          "#1e2856",
+          "#26326b",
+          "#677097",
+          "#9da3bc",
+          "#c9ccda",
+          "#eeeff3"
+        ]
+      },
+      "tint-deep": {
+        "role": "primary",
+        "displayName": "Deep Tint Ink",
+        "canonical": "#1c2554",
+        "tonalRamp": [
+          "#0b0f22",
+          "#111632",
+          "#161e43",
+          "#1c2554",
+          "#606687",
+          "#999db2",
+          "#c6c8d4",
+          "#edeef1"
+        ]
+      },
+      "envelope": {
+        "role": "primary",
+        "displayName": "Window-Envelope Blue",
+        "canonical": "#dfe4f2",
+        "tonalRamp": [
+          "#595b61",
+          "#868991",
+          "#b2b6c2",
+          "#dfe4f2",
+          "#e9ecf6",
+          "#f1f3f9",
+          "#f7f8fc",
+          "#fcfdfe"
+        ]
+      },
+      "envelope-soft": {
+        "role": "primary",
+        "displayName": "Envelope Wash",
+        "canonical": "#eef1f8",
+        "tonalRamp": [
+          "#5f6063",
+          "#8f9195",
+          "#bec1c6",
+          "#eef1f8",
+          "#f3f5fa",
+          "#f7f9fc",
+          "#fbfcfd",
+          "#fefefe"
+        ]
+      },
+      "rail-ink": {
+        "role": "primary",
+        "displayName": "Rail Ink",
+        "canonical": "#cdd3ec",
+        "tonalRamp": [
+          "#52545e",
+          "#7b7f8e",
+          "#a4a9bd",
+          "#cdd3ec",
+          "#dce0f2",
+          "#e8ebf6",
+          "#f2f4fa",
+          "#fbfbfd"
+        ]
+      },
+      "rail-muted": {
+        "role": "primary",
+        "displayName": "Rail Muted",
+        "canonical": "#a3acd3",
+        "tonalRamp": [
+          "#414554",
+          "#62677f",
+          "#828aa9",
+          "#a3acd3",
+          "#bfc5e0",
+          "#d6daeb",
+          "#e8eaf4",
+          "#f8f8fb"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus Blue",
+        "canonical": "#3d55c4",
+        "tonalRamp": [
+          "#18224e",
+          "#253376",
+          "#31449d",
+          "#3d55c4",
+          "#7788d6",
+          "#a8b2e4",
+          "#ced4f0",
+          "#eff1fa"
+        ]
+      },
+      "danger": {
+        "role": "secondary",
+        "displayName": "Stamp Red",
+        "canonical": "#c4372d",
+        "tonalRamp": [
+          "#4e1612",
+          "#76211b",
+          "#9d2c24",
+          "#c4372d",
+          "#d6736c",
+          "#e4a5a0",
+          "#f0cdca",
+          "#faefee"
+        ]
+      },
+      "danger-soft": {
+        "role": "secondary",
+        "displayName": "Stamp Wash",
+        "canonical": "#fbefed",
+        "tonalRamp": [
+          "#64605f",
+          "#978f8e",
+          "#c9bfbe",
+          "#fbefed",
+          "#fcf4f2",
+          "#fdf8f7",
+          "#fefbfa",
+          "#fffefe"
+        ]
+      },
+      "ok": {
+        "role": "secondary",
+        "displayName": "Ledger Green",
+        "canonical": "#2f7a50",
+        "tonalRamp": [
+          "#133120",
+          "#1c4930",
+          "#266240",
+          "#2f7a50",
+          "#6da284",
+          "#a1c3b0",
+          "#cbded3",
+          "#eef4f1"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Bond Paper",
+        "canonical": "#fbfbf8",
+        "tonalRamp": [
+          "#646463",
+          "#979795",
+          "#c9c9c6",
+          "#fbfbf8",
+          "#fcfcfa",
+          "#fdfdfc",
+          "#fefefd",
+          "#fffffe"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Ledger Panel",
+        "canonical": "#f1f1eb",
+        "tonalRamp": [
+          "#60605e",
+          "#91918d",
+          "#c1c1bc",
+          "#f1f1eb",
+          "#f5f5f1",
+          "#f9f9f6",
+          "#fcfcfa",
+          "#fefefd"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e5e4dc",
+        "tonalRamp": [
+          "#5c5b58",
+          "#898984",
+          "#b7b6b0",
+          "#e5e4dc",
+          "#edece6",
+          "#f3f3ef",
+          "#f8f8f6",
+          "#fdfdfc"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#cfd0d6",
+        "tonalRamp": [
+          "#535356",
+          "#7c7d80",
+          "#a6a6ab",
+          "#cfd0d6",
+          "#dddee2",
+          "#e9eaed",
+          "#f3f3f5",
+          "#fbfbfc"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1a1e2c",
+        "tonalRamp": [
+          "#0a0c12",
+          "#10121a",
+          "#151823",
+          "#1a1e2c",
+          "#5f626b",
+          "#989aa0",
+          "#c6c7ca",
+          "#ededee"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#646a7f",
+        "tonalRamp": [
+          "#282a33",
+          "#3c404c",
+          "#505566",
+          "#646a7f",
+          "#9297a5",
+          "#b9bcc5",
+          "#d8dadf",
+          "#f3f3f5"
+        ]
+      },
+      "shade": {
+        "role": "neutral",
+        "displayName": "Shade",
+        "canonical": "#141a38",
+        "tonalRamp": [
+          "#080a16",
+          "#0c1022",
+          "#10152d",
+          "#141a38",
+          "#5a5f74",
+          "#9598a5",
+          "#c4c6cd",
+          "#ecedef"
+        ]
+      },
+      "rail-line": {
+        "role": "primary",
+        "displayName": "Rail Hairline",
+        "canonical": "rgb(255 255 255 / 0.13)"
+      },
+      "accent-ink": {
+        "role": "neutral",
+        "displayName": "Accent Ink (white)",
+        "canonical": "#ffffff"
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles (Proyectos, Vista resuelta), tint blue."
+      },
+      "entity-title": {
+        "displayName": "Entity Title",
+        "purpose": "Entity name beside its swatch, tint blue."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Dialog titles, empty-state headings, brand wordmark (700)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base size for the whole app including tables, buttons, tabs."
+      },
+      "body-lead": {
+        "displayName": "Body Lead",
+        "purpose": "Descriptions and empty-state copy, ~65ch."
+      },
+      "key": {
+        "displayName": "Key",
+        "purpose": "Variable keys and active rail entities."
+      },
+      "value": {
+        "displayName": "Value",
+        "purpose": "Revealed values and editors."
+      },
+      "reference": {
+        "displayName": "Reference",
+        "purpose": "Reference chips; entity part bold."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Muted mono readouts: lengths, timestamps, counts."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase mono column headers and rail section labels only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "button-lip",
+        "value": "0 1px 0 rgb(0 0 0 / 0.12)",
+        "purpose": "Primary button only."
+      },
+      {
+        "name": "popover",
+        "value": "0 10px 30px -10px rgb(15 20 45 / 0.3)",
+        "purpose": "Menus and reference autocomplete."
+      },
+      {
+        "name": "toast",
+        "value": "0 10px 30px -12px rgb(15 20 45 / 0.35)",
+        "purpose": "Sonner toasts."
+      },
+      {
+        "name": "dialog",
+        "value": "0 18px 48px -12px rgb(15 20 45 / 0.35)",
+        "purpose": "Dialogs, over shade scrim at 40%."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-expo-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Tint reveal wipe and dialog entrance."
+      },
+      {
+        "name": "tint-reveal",
+        "value": "clip-path 260ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease-out",
+        "purpose": "Tint cover lifts left to right off a value; removed under prefers-reduced-motion."
+      },
+      {
+        "name": "dialog-in",
+        "value": "180ms cubic-bezier(0.16, 1, 0.3, 1); from translateY(6px) scale(0.985), opacity 0",
+        "purpose": "Dialog entrance."
+      },
+      {
+        "name": "fade-in",
+        "value": "100-150ms ease-out",
+        "purpose": "Scrims, menus, tooltips."
+      },
+      {
+        "name": "row-in",
+        "value": "1600ms ease-out from envelope background",
+        "purpose": "Flash on a row reached via a reference link."
+      },
+      {
+        "name": "state",
+        "value": "150ms",
+        "purpose": "Color/background/border transitions on controls and rows."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "md (viewport)",
+        "value": "768px",
+        "purpose": "Rail docks; below it becomes a drawer."
+      },
+      {
+        "name": "@lg (container)",
+        "value": "32rem",
+        "purpose": "Table rows become one compact line."
+      },
+      {
+        "name": "@3xl (container)",
+        "value": "48rem",
+        "purpose": "Registro metadata column appears."
+      }
+    ],
+    "tints": {
+      "patterns": [
+        "tint-0 diagonal lines",
+        "tint-1 grid",
+        "tint-2 guilloché waves",
+        "tint-3 dots",
+        "tint-4 CONFIDENCIAL microprint",
+        "tint-5 zigzag",
+        "tint-6 rule and tick",
+        "tint-7 crosshatch"
+      ],
+      "paint": "SVG alpha mask over currentColor at --tint-strength 0.62; color from --tint-ink (default tint blue, rail-ink on the rail)",
+      "source": "apps/web/src/styles.css"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action per view (Nueva variable, Guardar).",
+      "html": "<button class=\"ds-btn-primary\">Nueva variable</button>",
+      "css": ".ds-btn-primary{font-family:'Public Sans Variable',system-ui,sans-serif;height:32px;padding:0 12px;border:0;border-radius:5px;background:var(--color-accent,#26326b);color:#fff;font-size:13px;font-weight:500;box-shadow:0 1px 0 rgb(0 0 0/.12);transition:background-color 150ms}.ds-btn-primary:hover{background:var(--color-accent-hover,#1c2554)}.ds-btn-primary:focus-visible{outline:2px solid var(--color-focus,#3d55c4);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Default button: header actions, Cancelar.",
+      "html": "<button class=\"ds-btn-secondary\">Mostrar valores</button>",
+      "css": ".ds-btn-secondary{font-family:'Public Sans Variable',system-ui,sans-serif;height:32px;padding:0 12px;border:1px solid var(--color-line-strong,#cfd0d6);border-radius:5px;background:var(--color-ground,#fbfbf8);color:var(--color-ink,#1a1e2c);font-size:13px;font-weight:500;transition:background-color 150ms}.ds-btn-secondary:hover{background:var(--color-panel,#f1f1eb)}.ds-btn-secondary:focus-visible{outline:2px solid var(--color-focus,#3d55c4);outline-offset:2px}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Confirms destruction in delete dialogs only.",
+      "html": "<button class=\"ds-btn-danger\">Eliminar</button>",
+      "css": ".ds-btn-danger{font-family:'Public Sans Variable',system-ui,sans-serif;height:32px;padding:0 12px;border:0;border-radius:5px;background:var(--color-danger,#c4372d);color:#fff;font-size:13px;font-weight:500}.ds-btn-danger:hover{background:rgb(196 55 45/.9)}.ds-btn-danger:focus-visible{outline:2px solid var(--color-focus,#3d55c4);outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Paper field with tint caret and focus ring; mono for keys and values.",
+      "html": "<input class=\"ds-input\" placeholder=\"NUEVA_VARIABLE\">",
+      "css": ".ds-input{font-family:'JetBrains Mono Variable',ui-monospace,monospace;width:240px;height:32px;padding:0 10px;border:1px solid var(--color-line-strong,#cfd0d6);border-radius:5px;background:var(--color-ground,#fbfbf8);color:var(--color-ink,#1a1e2c);font-size:13px;font-weight:700;caret-color:#26326b;transition:border-color 150ms,box-shadow 150ms}.ds-input::placeholder{color:#646a7f}.ds-input:focus{outline:none;border-color:#26326b;box-shadow:0 0 0 3px rgb(61 85 196/.25)}"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "rail",
+      "description": "Tint-ink rail with entity rows; active row inverts to envelope blue.",
+      "html": "<nav class=\"ds-rail\"><div class=\"ds-rail-label\">Entidades</div><a class=\"ds-rail-item is-active\"><span class=\"ds-tint ds-sw\"></span>api<em>12</em></a><a class=\"ds-rail-item\"><span class=\"ds-tint ds-tint-2 ds-sw\"></span>postgres<em>4</em></a></nav>",
+      "css": ".ds-tint{position:relative;display:inline-block;color:var(--tint-ink,var(--color-tint,#26326b));--m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Cpath d='M-1 1l2-2M0 5l5-5M4 6l2-2' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E\")} .ds-tint-2{--m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3Q4 0 8 3T16 3M0 3Q4 6 8 3T16 3' fill='none' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E\")} .ds-tint::before{content:'';position:absolute;inset:0;background:currentColor;opacity:.62;-webkit-mask:var(--m) repeat;mask:var(--m) repeat} .ds-rail{width:248px;padding:16px 0;background:#26326b;color:#cdd3ec;--tint-ink:#cdd3ec}.ds-rail-label{font-family:'JetBrains Mono Variable',ui-monospace,monospace;padding:0 20px 8px;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#a3acd3}.ds-rail-item{font-family:'JetBrains Mono Variable',ui-monospace,monospace;display:flex;align-items:center;gap:12px;height:36px;padding:0 20px;font-size:13px;font-weight:500;color:#cdd3ec;cursor:pointer;transition:background-color 150ms,color 150ms}.ds-rail-item em{margin-left:auto;font-style:normal;font-size:11px;opacity:.75}.ds-rail-item:hover{background:rgb(255 255 255/.08);color:#fff}.ds-rail-item.is-active{background:#dfe4f2;color:#26326b;font-weight:700;--tint-ink:#26326b}.ds-sw{width:18px;height:18px;border:1px solid color-mix(in srgb,currentColor 30%,transparent)}"
+    },
+    {
+      "name": "Tabs",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Text tabs on a hairline; active is tint blue with a 2px inset underline.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab is-active\">Variables <span>8</span></button><button class=\"ds-tab\">Raw</button><button class=\"ds-tab\">JSON</button><button class=\"ds-tab\">Resuelto <span class=\"bad\">1</span></button></div>",
+      "css": ".ds-tabs{font-family:'Public Sans Variable',system-ui,sans-serif;display:flex;gap:24px;padding:0 32px;border-bottom:1px solid #e5e4dc;background:#fbfbf8}.ds-tab{height:40px;border:0;background:none;font:inherit;font-size:13px;font-weight:500;color:#646a7f;transition:color 150ms}.ds-tab:hover{color:#1a1e2c}.ds-tab.is-active{font-weight:600;color:#26326b;box-shadow:inset 0 -2px 0 #26326b}.ds-tab span{font-family:'JetBrains Mono Variable',ui-monospace,monospace;margin-left:6px;font-size:11px;font-weight:400}.ds-tab span.bad{font-weight:700;color:#c4372d}.ds-tab:focus-visible{outline:2px solid #3d55c4;outline-offset:2px}"
+    },
+    {
+      "name": "Reference Chip",
+      "kind": "chip",
+      "refersTo": "reference-chip",
+      "description": "A ${{entity.KEY}} reference carrying the target entity tint; broken variant in stamp red.",
+      "html": "<span class=\"ds-chip\"><span class=\"ds-tint ds-tint-2 ds-csw\"></span><b>postgres</b>.DATABASE_URL</span> <span class=\"ds-chip is-broken\"><span class=\"ds-csw ds-dash\"></span><b>redis</b>.URL</span>",
+      "css": ".ds-tint{position:relative;display:inline-block;color:var(--tint-ink,var(--color-tint,#26326b));--m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Cpath d='M-1 1l2-2M0 5l5-5M4 6l2-2' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E\")} .ds-tint-2{--m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3Q4 0 8 3T16 3M0 3Q4 6 8 3T16 3' fill='none' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E\")} .ds-tint::before{content:'';position:absolute;inset:0;background:currentColor;opacity:.62;-webkit-mask:var(--m) repeat;mask:var(--m) repeat} .ds-chip{font-family:'JetBrains Mono Variable',ui-monospace,monospace;display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 6px;border:1px solid #c7cee6;background:#eef1f8;color:#26326b;font-size:12.5px;line-height:1;cursor:pointer;transition:background-color 150ms,border-color 150ms}.ds-chip:hover{background:#dfe4f2;border-color:rgb(38 50 107/.6)}.ds-chip.is-broken{border-color:rgb(196 55 45/.6);background:#fbefed;color:#c4372d}.ds-csw{width:12px;height:12px;border:1px solid color-mix(in srgb,currentColor 35%,transparent)}.ds-dash{border:1px dashed #c4372d}"
+    },
+    {
+      "name": "Variable Row with Tint Reveal",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "Signature: key bold mono, value hidden under its entity tint; hover the value to see the 260ms clip-path wipe.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-key\">JWT_SECRET</span><span class=\"ds-val\"><span class=\"ds-txt\">s3cr3t-9f2a7c1e0b44d8</span><span class=\"ds-cover\"><span class=\"ds-tint ds-strip\"></span></span></span><span class=\"ds-meta\">22 car. · hace 3 días</span><span class=\"ds-stamp\">REF. ROTA</span></div>",
+      "css": ".ds-tint{position:relative;display:inline-block;color:var(--tint-ink,var(--color-tint,#26326b));--m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='5' height='5'%3E%3Cpath d='M-1 1l2-2M0 5l5-5M4 6l2-2' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E\")} .ds-tint-2{--m:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3Q4 0 8 3T16 3M0 3Q4 6 8 3T16 3' fill='none' stroke='%23000' stroke-width='.75'/%3E%3C/svg%3E\")} .ds-tint::before{content:'';position:absolute;inset:0;background:currentColor;opacity:.62;-webkit-mask:var(--m) repeat;mask:var(--m) repeat} .ds-row{font-family:'Public Sans Variable',system-ui,sans-serif;display:grid;grid-template-columns:176px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px 32px;border-bottom:1px solid #e5e4dc;font-size:13px;color:#1a1e2c;transition:background-color 150ms}.ds-row:hover{background:#eef1f8}.ds-key{font-family:'JetBrains Mono Variable',ui-monospace,monospace;font-weight:700;letter-spacing:-.01em}.ds-val{font-family:'JetBrains Mono Variable',ui-monospace,monospace;position:relative;display:inline-grid}.ds-txt,.ds-cover{grid-area:1/1}.ds-txt{opacity:0;transition:opacity 200ms}.ds-cover{display:flex;align-items:center;transition:clip-path 260ms cubic-bezier(.16,1,.3,1),opacity 200ms ease-out;clip-path:inset(0 0 0 0)}.ds-strip{width:13.6em;height:1.05em;border:1px solid color-mix(in srgb,currentColor 25%,transparent)}.ds-val:hover .ds-txt{opacity:1}.ds-val:hover .ds-cover{clip-path:inset(0 0 0 100%);opacity:0}.ds-meta{font-family:'JetBrains Mono Variable',ui-monospace,monospace;font-size:11.5px;color:#646a7f}.ds-stamp{font-family:'JetBrains Mono Variable',ui-monospace,monospace;display:inline-block;transform:rotate(-2deg);border:1.5px solid #c4372d;padding:1px 6px;font-size:11px;line-height:16px;font-weight:700;letter-spacing:.08em;color:#c4372d}@media (prefers-reduced-motion:reduce){.ds-cover{transition:none}}"
+    },
+    {
+      "name": "Menu",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Dropdown on paper with popover shadow; danger item in stamp red.",
+      "html": "<div class=\"ds-menu\"><div class=\"ds-mi\">.env resuelto</div><div class=\"ds-mi\">.env con referencias</div><div class=\"ds-sep\"></div><div class=\"ds-mi danger\">Eliminar entidad</div></div>",
+      "css": ".ds-menu{font-family:'Public Sans Variable',system-ui,sans-serif;width:224px;padding:4px;border:1px solid #e5e4dc;border-radius:6px;background:#fbfbf8;box-shadow:0 10px 30px -10px rgb(15 20 45/.3)}.ds-mi{padding:6px 8px;border-radius:4px;font-size:13px;color:#1a1e2c;cursor:default}.ds-mi:hover{background:#f1f1eb}.ds-mi.danger{color:#c4372d}.ds-mi.danger:hover{background:rgb(196 55 45/.1)}.ds-sep{height:1px;margin:4px 0;background:#e5e4dc}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Security Envelope",
+    "overview": "**Creative North Star: \"The Security Envelope\"**\n\nEvery entity is an envelope with its own security tint, the patterned interior a bank prints so the contents cannot be read through the paper. A hidden value is drawn as a strip of its entity's tint; a reference to another entity carries that entity's tint as a swatch. The tint is the system's one expressive device and it does exactly two jobs: hiding values and identifying entities. Everything else is quiet office paper: white bond ground, a deep tint-ink blue rail, hairline rules, and dense mono readouts.\n\nThe density is a developer's working ledger, not a dashboard. Lists run edge to edge between hairlines with no cards around them; a variable table is set at one size and ranked by weight and by mono against sans. Color carries status only where it means something: stamp red for a broken reference or a destructive act, ledger green for a save confirmation. The world is light only.\n\nRevealing is the signature motion: the tint lifts off a value like the window of an envelope, a short clip-path wipe from left to right.",
+    "keyCharacteristics": [
+      "Light only: bond-paper ground with a tint-ink blue rail.",
+      "Eight security-tint patterns, painted as alpha masks in `currentColor`, reserved for hidden values and entity identity.",
+      "Public Sans for interface prose, JetBrains Mono for keys, values, entity names and metadata readouts.",
+      "Hairline-ruled, edge-to-edge rows; no cards around lists.",
+      "Container-query tables that collapse from three/four columns to a stacked two-line row.",
+      "Square identity marks (swatches, strips, chips, stamps); softly rounded controls."
+    ],
+    "rules": [
+      {
+        "name": "The One Job Rule",
+        "body": "Tint patterns appear only where a value is hidden or an entity is identified (swatch, strip, reference chip, the brand mark). Never as a background texture, divider, or decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stamp Rule",
+        "body": "Red means something is broken or about to be destroyed. It never marks emphasis, counts, or ordinary validation of a well-formed state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ledger Rule",
+        "body": "Green appears only to confirm a completed save. No green badges, no green status dots.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single-Size Table Rule",
+        "body": "Inside a table, rank by weight and by mono against sans, not by size: keys bold mono, values regular mono, at the same 13px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Data Is Mono Rule",
+        "body": "Anything the user could paste into a terminal (keys, values, entity names, references, counts) is set in mono; prose and actions are set in sans.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Page Rule",
+        "body": "Nothing attached to the page casts a shadow; rows, headers and lists are separated by hairlines alone.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** draw a hidden value as a strip of its own entity's tint, and every reference with its target entity's swatch.",
+      "**Do** repaint tints through `--tint-ink` when placing them on the rail or another dark ground.",
+      "**Do** set keys, values, entity names and metadata in JetBrains Mono, and rank table cells by weight rather than size (13px throughout).",
+      "**Do** let tables respond to their container with `@lg` and `@3xl` breakpoints.",
+      "**Do** keep rows edge to edge, separated by hairlines, with envelope wash on hover.",
+      "**Do** guard every motion with `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "**Don't** use tint patterns for decoration, backgrounds, dividers or empty states; they hide values and identify entities, nothing else.",
+      "**Don't** hide secrets with grey dots, asterisks or lock icons; the tint is the hiding device.",
+      "**Don't** use stamp red for anything but broken references and destruction, or ledger green for anything but a completed save.",
+      "**Don't** wrap lists or tables in cards.",
+      "**Don't** shadow anything attached to the page; shadows are for menus, toasts and dialogs.",
+      "**Don't** introduce a dark theme; the world is light only."
+    ]
+  }
+}
